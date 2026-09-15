@@ -1,15 +1,15 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { 
-  CheckCircle2, 
-  Users, 
-  Building2, 
-  Briefcase, 
-  Award, 
-  Percent, 
-  Brain, 
-  BookOpen 
+import {
+  CheckCircle2,
+  Users,
+  Building2,
+  Briefcase,
+  Award,
+  Percent,
+  Brain,
+  BookOpen
 } from "lucide-react";
 
 function useCountUp(target: number, duration: number = 2000) {
@@ -108,10 +108,10 @@ export default function BenefitsSection() {
       badgeText: "AI Masters"
     },
     {
-      title: "Scholarships & certificates",
+      title: "Founders Grant & certificates",
       description: "Recognition your top students can show for themselves.",
       symbol: <Award className="w-5 h-5 sm:w-6 sm:h-6 text-[#E5B869]" />,
-      badgeText: "Recognition"
+      badgeText: "Grant & Recognition"
     },
     {
       title: "Built for placements",
@@ -123,20 +123,19 @@ export default function BenefitsSection() {
 
   return (
     <section className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-12">
-      
+
       {/* ── METRICS BANNER CARD ── */}
       <div
         ref={bannerRef}
-        className={`pro-card shimmer-on-hover w-full bg-[#0e1627]/12 backdrop-blur-md border border-[#E5B869]/25 rounded-[40px] p-8 md:p-12 shadow-[0_4px_20px_0_rgba(0,0,0,0.15)] relative overflow-hidden transition-all duration-700 ease-out ${
-          bannerVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-        }`}
+        className={`pro-card shimmer-on-hover w-full bg-[#0e1627]/12 backdrop-blur-md border border-[#E5B869]/25 rounded-[40px] p-8 md:p-12 shadow-[0_4px_20px_0_rgba(0,0,0,0.15)] relative overflow-hidden transition-all duration-700 ease-out ${bannerVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          }`}
       >
         {/* Ambient Glows */}
         <div className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-[#d2a344]/20 blur-[100px] rounded-full pointer-events-none" />
         <div className="absolute top-1/2 right-1/4 translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-[#d2a344]/20 blur-[100px] rounded-full pointer-events-none" />
 
         <div className="relative z-10 flex flex-col md:flex-row items-center justify-around gap-12">
-          
+
           <div ref={students.ref} className="flex flex-col items-center text-center group cursor-default">
             <div className="w-20 h-20 rounded-full border border-[#d2a344]/50 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-[#d2a344]/15 group-hover:border-[#E5B869] group-hover:shadow-[0_0_20px_rgba(229,184,105,0.3)] transition-all duration-300">
               <Users className="w-10 h-10 text-[#d2a344]" />
@@ -171,15 +170,14 @@ export default function BenefitsSection() {
           {benefits.map((benefit, idx) => (
             <div
               key={idx}
-              className={`transition-all duration-700 ease-out ${
-                listVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-7"
-              }`}
+              className={`transition-all duration-700 ease-out ${listVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-7"
+                }`}
               style={{
                 transitionDelay: listVisible ? `${idx * 160}ms` : "0ms",
               }}
             >
               <div className="group pro-card flex flex-col sm:flex-row gap-5 sm:gap-6 p-5 sm:p-6 rounded-3xl bg-[#10192A]/35 border border-white/5 hover:border-[#E5B869]/35 hover:bg-[#10192A]/70 transition-all duration-400 overflow-hidden relative items-start sm:items-center justify-between">
-                
+
                 {/* Left content: Check indicator + Text */}
                 <div className="flex flex-1 gap-4 sm:gap-5 items-start relative z-10">
                   <div className="mt-1 shrink-0 w-8 h-8 rounded-full bg-[#E5B869]/10 border border-[#E5B869]/25 flex items-center justify-center group-hover:border-[#E5B869] group-hover:scale-110 group-hover:shadow-[0_0_15px_rgba(229,184,105,0.35)] transition-all duration-300">
