@@ -116,12 +116,34 @@ export function WeatherProvider({ children }: { children: React.ReactNode }) {
   /** Live browser hour, updated every 30s */
   const [liveHour, setLiveHour] = useState<number>(getCurrentHourFromBrowser());
 
-  // Update live hour periodically
+  // Keep live hour strictly synchronized with the user's local browser clock
   useEffect(() => {
-    const interval = setInterval(() => {
+    const handleSync = () => {
       setLiveHour(getCurrentHourFromBrowser());
-    }, 30000);
-    return () => clearInterval(interval);
+    };
+
+    // 1. Asynchronously sync on mount to capture browser time without cascading effect warning
+    const initTimer = setTimeout(handleSync, 0);
+
+    // 2. High-frequency tick (every 10s) to keep minute transitions accurate
+    const interval = setInterval(handleSync, 10000);
+
+    // 3. Immediately resync whenever user returns to the tab or wakes up laptop
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        handleSync();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("focus", handleSync);
+
+    return () => {
+      clearTimeout(initTimer);
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("focus", handleSync);
+    };
   }, []);
 
   const currentHour = manualHour !== null ? manualHour : liveHour;

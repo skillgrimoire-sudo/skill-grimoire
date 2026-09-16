@@ -310,7 +310,9 @@ export async function GET(request: NextRequest) {
       source: "live",
     };
 
-    return NextResponse.json(response);
+    return NextResponse.json(response, {
+      headers: { "Cache-Control": "no-store, no-cache, must-revalidate" },
+    });
   } catch (err) {
     console.error("Weather fetch fallback trigger:", err);
     // Graceful fallback with atmospheric state strictly driven by actual local time of day
@@ -354,6 +356,8 @@ export async function GET(request: NextRequest) {
       formattedDate: now.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
       source: "fallback",
     };
-    return NextResponse.json(fallbackResponse);
+    return NextResponse.json(fallbackResponse, {
+      headers: { "Cache-Control": "no-store, no-cache, must-revalidate" },
+    });
   }
 }
