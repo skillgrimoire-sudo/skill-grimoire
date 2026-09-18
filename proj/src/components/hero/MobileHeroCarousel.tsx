@@ -63,13 +63,15 @@ export default function MobileHeroCarousel({ onOpenVideo }: MobileHeroCarouselPr
           </p>
 
           {/* Video CTA */}
-          <button
-            onClick={onOpenVideo}
-            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-xs font-bold text-black bg-gradient-to-r from-[#F5D075] via-[#E5B869] to-[#C69234] shadow-[0_4px_20px_rgba(229,184,105,0.4)] active:scale-95 transition"
+          <a
+            href="https://youtu.be/B3pLlC2T6Pw?si=1lIXXt7m1XXNc95Y"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-xs font-bold text-black bg-gradient-to-r from-[#F5D075] via-[#E5B869] to-[#C69234] shadow-[0_4px_20px_rgba(229,184,105,0.4)] active:scale-95 transition cursor-pointer"
           >
             <Play className="w-3.5 h-3.5 fill-black" />
-            <span>Watch Introduction Video</span>
-          </button>
+            <span>View Intro Video</span>
+          </a>
 
           {/* Key Stats */}
           <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#E5B869]/15">

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { X, Play, Volume2, Sparkles, CheckCircle2 } from "lucide-react";
+import { X, Play, Volume2, Sparkles, CheckCircle2, ExternalLink } from "lucide-react";
 
 interface VideoModalProps {
   isOpen: boolean;
@@ -29,25 +29,36 @@ export default function VideoModal({ isOpen, onClose }: VideoModalProps) {
               Skill Grimoire — Introduction & AI Ecosystem
             </h3>
           </div>
-          <button
-            onClick={handleClose}
-            className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800 active:scale-95 transition shrink-0 ml-2"
-            aria-label="Close modal"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2 shrink-0 ml-2">
+            <a
+              href="https://youtu.be/B3pLlC2T6Pw?si=1lIXXt7m1XXNc95Y"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold text-[#E5B869] hover:bg-[#E5B869]/10 border border-[#E5B869]/30 transition"
+              title="Open in YouTube"
+            >
+              <span>YouTube</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
+            <button
+              onClick={handleClose}
+              className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800 active:scale-95 transition"
+              aria-label="Close modal"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Video Player Area */}
         <div className="relative aspect-video bg-black flex flex-col items-center justify-center overflow-hidden">
           {isPlaying ? (
-            <video
-              src="/videos/logo_reveal.mp4"
-              controls
-              autoPlay
-              playsInline
-              className="w-full h-full object-contain bg-black"
-              onEnded={() => setIsPlaying(false)}
+            <iframe
+              src="https://www.youtube-nocookie.com/embed/B3pLlC2T6Pw?autoplay=1&rel=0"
+              title="Skill Grimoire Introduction Video"
+              className="w-full h-full border-0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
             />
           ) : (
             <div className="relative w-full h-full bg-gradient-to-br from-[#060A14] via-[#0E1729] to-[#040710] flex flex-col items-center justify-center p-4 sm:p-6 text-center">

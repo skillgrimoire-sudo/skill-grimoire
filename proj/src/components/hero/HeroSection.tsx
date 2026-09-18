@@ -53,15 +53,17 @@ export default function HeroSection() {
                 The all-in-one ecosystem to learn, teach and transform careers with the power of AI.
               </p>
 
-              <button
-                onClick={() => setVideoModalOpen(true)}
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs text-black bg-gradient-to-r from-[#F5D075] via-[#E5B869] to-[#C69234] hover:brightness-110 hover:-translate-y-0.5 shadow-[0_4px_20px_rgba(229,184,105,0.45)] transition-all duration-200"
+              <a
+                href="https://youtu.be/B3pLlC2T6Pw?si=1lIXXt7m1XXNc95Y"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs text-black bg-gradient-to-r from-[#F5D075] via-[#E5B869] to-[#C69234] hover:brightness-110 hover:-translate-y-0.5 shadow-[0_4px_20px_rgba(229,184,105,0.45)] transition-all duration-200 cursor-pointer"
               >
                 <div className="w-4 h-4 rounded-full bg-black/15 flex items-center justify-center">
                   <Play className="w-2.5 h-2.5 fill-black ml-0.5" />
                 </div>
-                Watch Introduction Video
-              </button>
+                View Intro Video
+              </a>
 
               {/* Stats */}
               <div className="grid grid-cols-2 gap-2 pt-1 border-t border-[#E5B869]/20">
