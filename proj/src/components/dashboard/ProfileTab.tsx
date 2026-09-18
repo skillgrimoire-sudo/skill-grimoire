@@ -4,6 +4,44 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { User, Mail, Calendar, BookOpen, GraduationCap, Award, Clock } from "lucide-react";
 
+function formatDob(dateVal?: string | Date | null): string {
+  if (!dateVal) return "Not provided";
+
+  let year: number;
+  let month: number;
+  let day: number;
+
+  if (typeof dateVal === "string") {
+    const match = dateVal.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (match) {
+      year = parseInt(match[1], 10);
+      month = parseInt(match[2], 10);
+      day = parseInt(match[3], 10);
+    } else {
+      const d = new Date(dateVal);
+      if (isNaN(d.getTime())) return "Not provided";
+      year = d.getFullYear();
+      month = d.getMonth() + 1;
+      day = d.getDate();
+    }
+  } else if (dateVal instanceof Date) {
+    if (isNaN(dateVal.getTime())) return "Not provided";
+    year = dateVal.getFullYear();
+    month = dateVal.getMonth() + 1;
+    day = dateVal.getDate();
+  } else {
+    return "Not provided";
+  }
+
+  const suffixes = ["th", "st", "nd", "rd"];
+  const v = day % 100;
+  const suffix = (day > 10 && day < 20) ? "th" : suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0];
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const monthName = monthNames[month - 1] || "";
+
+  return `${day}${suffix} ${monthName}, ${year}`;
+}
+
 export default function ProfileTab() {
   const { user } = useAuth();
   const [studentData, setStudentData] = useState<any>(null);
@@ -61,7 +99,9 @@ export default function ProfileTab() {
             </div>
             <div>
               <p className="text-[10px] text-gray-400 uppercase tracking-wide">Date of Birth</p>
-              <p className="text-sm font-semibold text-white">14th Aug, 2005</p>
+              <p className="text-sm font-semibold text-white">
+                {formatDob(studentData?.dateOfBirth || user?.dateOfBirth)}
+              </p>
             </div>
           </div>
           

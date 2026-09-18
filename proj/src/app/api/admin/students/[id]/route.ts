@@ -18,12 +18,13 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await request.json();
-    const { name, email, username, studentClass, gender, newPassword, resetPassword } = body as {
+    const { name, email, username, studentClass, gender, dateOfBirth, newPassword, resetPassword } = body as {
       name?: string;
       email?: string;
       username?: string;
       studentClass?: string;
       gender?: string;
+      dateOfBirth?: string;
       newPassword?: string;
       resetPassword?: boolean;
     };
@@ -34,6 +35,9 @@ export async function PUT(
     if (email) updateData.email = email.toLowerCase().trim();
     if (username) updateData.username = username.toLowerCase().trim();
     if (studentClass !== undefined) updateData.studentClass = studentClass;
+    if (dateOfBirth !== undefined) {
+      updateData.dateOfBirth = dateOfBirth ? new Date(dateOfBirth) : null;
+    }
     if (gender !== undefined) {
       updateData.gender = gender;
       if (gender === "Male") {
@@ -61,6 +65,7 @@ export async function PUT(
         name: true,
         email: true,
         username: true,
+        dateOfBirth: true,
         mustChangePassword: true,
         emailVerified: true,
       },

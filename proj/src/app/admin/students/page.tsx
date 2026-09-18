@@ -16,6 +16,7 @@ interface Student {
   mustChangePassword: boolean;
   studentClass?: string | null;
   gender?: string | null;
+  dateOfBirth?: string | null;
   createdAt: string;
   enrollments: { id: string; status: string; progressPercent: number }[];
 }
@@ -313,6 +314,7 @@ function ExcelTab({ onClose, onSuccess }: { onClose: () => void; onSuccess: () =
   const [rows, setRows] = useState<ParsedRow[]>([]);
   const [fileName, setFileName] = useState("");
   const [parseError, setParseError] = useState("");
+  const [sendEmail, setSendEmail] = useState(true);
   const [isImporting, setIsImporting] = useState(false);
   const [result, setResult] = useState<{ created: number; skipped: number; errors: { row: number; name: string; reason: string }[] } | null>(null);
 
@@ -393,7 +395,15 @@ function ExcelTab({ onClose, onSuccess }: { onClose: () => void; onSuccess: () =
       const res = await fetch("/api/admin/students/bulk", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ students: validRows.map((r) => ({ name: r.name, email: r.email, studentClass: r.studentClass, dateOfBirth: r.dateOfBirth })) }),
+        body: JSON.stringify({
+          students: validRows.map((r) => ({
+            name: r.name,
+            email: r.email,
+            studentClass: r.studentClass,
+            dateOfBirth: r.dateOfBirth,
+          })),
+          sendEmail,
+        }),
       });
       const data = await res.json();
       if (!res.ok) { setParseError(data.error||"Import failed."); return; }
@@ -422,6 +432,11 @@ function ExcelTab({ onClose, onSuccess }: { onClose: () => void; onSuccess: () =
             {result.skipped > 0 && <span className="text-amber-400 font-semibold">↷ {result.skipped} skipped</span>}
             {result.errors.length > 0 && <span className="text-red-400 font-semibold">✗ {result.errors.length} errors</span>}
           </div>
+          {sendEmail && result.created > 0 && (
+            <p className="text-xs text-gray-400">
+              ✉ Welcome emails sent with login credentials
+            </p>
+          )}
         </div>
         {result.errors.length > 0 && (
           <div className="rounded-xl bg-red-500/8 border border-red-500/20 p-3 space-y-1">
@@ -497,6 +512,18 @@ function ExcelTab({ onClose, onSuccess }: { onClose: () => void; onSuccess: () =
               </tbody>
             </table>
           </div>
+
+          <label style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", borderRadius: 14, background: "#060C18", border: "1px solid #1E2D45", cursor: "pointer", transition: "all 0.2s" }}>
+            <div style={{ width: 36, height: 20, borderRadius: 999, background: sendEmail ? "#E5B869" : "#1E2D45", position: "relative", transition: "background 0.25s", flexShrink: 0 }}>
+              <div style={{ width: 16, height: 16, borderRadius: 999, background: "white", position: "absolute", top: 2, left: 2, transition: "transform 0.25s", boxShadow: "0 1px 3px rgba(0,0,0,0.3)", transform: sendEmail ? "translateX(16px)" : "none" }} />
+            </div>
+            <div style={{ flex: 1 }}>
+              <p className="text-xs text-white font-medium">Send welcome email</p>
+              <p style={{ fontSize: 10, color: "#6b7280", marginTop: 1 }}>Students will receive their login credentials via email</p>
+            </div>
+            <input type="checkbox" checked={sendEmail} onChange={(e) => setSendEmail(e.target.checked)} className="sr-only" />
+          </label>
+
           <div className="flex gap-3">
             <button type="button" onClick={onClose} className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-gray-400 border border-[#1E2D45] hover:border-gray-500 transition">Cancel</button>
             <button onClick={handleImport} disabled={isImporting||!validRows.length} className="flex-1 py-2.5 rounded-xl text-sm font-bold text-black bg-gradient-to-r from-[#F5D075] via-[#E5B869] to-[#C69234] hover:brightness-110 shadow-[0_4px_16px_rgba(229,184,105,0.3)] transition disabled:opacity-50 flex items-center justify-center gap-2">
@@ -612,6 +639,9 @@ function EditStudentModal({ student, onClose, onSuccess }: { student: Student; o
   const [email, setEmail] = useState(student.email);
   const [studentClass, setStudentClass] = useState(student.studentClass || "");
   const [gender, setGender] = useState(student.gender || "");
+  const [dateOfBirth, setDateOfBirth] = useState(
+    student.dateOfBirth ? new Date(student.dateOfBirth).toISOString().split("T")[0] : ""
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -623,7 +653,7 @@ function EditStudentModal({ student, onClose, onSuccess }: { student: Student; o
       const res = await fetch(`/api/admin/students/${student.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, studentClass, gender }),
+        body: JSON.stringify({ name, email, studentClass, gender, dateOfBirth }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to update student.");
@@ -655,6 +685,18 @@ function EditStudentModal({ student, onClose, onSuccess }: { student: Student; o
             <div className="space-y-1">
               <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Email Address</label>
               <input type="email" value={email} onChange={e => setEmail(e.target.value)} required className="w-full bg-[#060C18] border border-[#1E2D45] rounded-xl px-4 py-2.5 text-sm text-white outline-none focus:border-[#E5B869]/50 transition" />
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Date of Birth</label>
+              <input
+                type="date"
+                value={dateOfBirth}
+                onChange={e => setDateOfBirth(e.target.value)}
+                max={new Date().toISOString().split("T")[0]}
+                style={{ colorScheme: "dark" }}
+                className="w-full bg-[#060C18] border border-[#1E2D45] rounded-xl px-4 py-2.5 text-sm text-white outline-none focus:border-[#E5B869]/50 transition"
+              />
             </div>
 
             <div className="space-y-1">

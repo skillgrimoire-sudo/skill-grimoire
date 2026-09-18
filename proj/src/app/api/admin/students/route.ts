@@ -26,6 +26,7 @@ export async function GET(request: NextRequest) {
         createdAt: true,
         studentClass: true,
         gender: true,
+        dateOfBirth: true,
         enrollments: {
           select: { id: true, status: true, progressPercent: true },
         },

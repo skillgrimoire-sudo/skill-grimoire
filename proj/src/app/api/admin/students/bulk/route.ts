@@ -2,10 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/lib/auth";
 import { requireAdmin } from "@/lib/admin-auth";
+import { sendWelcomeEmail } from "@/lib/email";
 
 /**
  * POST /api/admin/students/bulk
- * Body: { students: Array<{ name, email, studentClass, dateOfBirth, username? }> }
+ * Body: { students: Array<{ name, email, studentClass, dateOfBirth, username? }>, sendEmail?: boolean }
  * Returns: { success, created, skipped, errors }
  */
 export async function POST(request: NextRequest) {
@@ -14,7 +15,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { students } = body as {
+    const { students, sendEmail = true } = body as {
       students: {
         name: string;
         email: string;
@@ -23,6 +24,7 @@ export async function POST(request: NextRequest) {
         username?: string;
         gender?: string;
       }[];
+      sendEmail?: boolean;
     };
 
     if (!Array.isArray(students) || students.length === 0) {
@@ -32,6 +34,7 @@ export async function POST(request: NextRequest) {
     let created = 0;
     let skipped = 0;
     const errors: { row: number; name: string; email: string; reason: string }[] = [];
+    const emailPromises: Promise<unknown>[] = [];
 
     for (let i = 0; i < students.length; i++) {
       const { name, email, studentClass, dateOfBirth, username, gender } = students[i];
@@ -49,12 +52,17 @@ export async function POST(request: NextRequest) {
 
       let resolvedPassword: string | undefined;
       if (dateOfBirth) {
-        const dob = new Date(dateOfBirth);
-        if (!isNaN(dob.getTime())) {
-          const dd = String(dob.getDate()).padStart(2, "0");
-          const mm = String(dob.getMonth() + 1).padStart(2, "0");
-          const yyyy = dob.getFullYear();
-          resolvedPassword = `${dd}${mm}${yyyy}`;
+        const match = String(dateOfBirth).match(/^(\d{4})-(\d{2})-(\d{2})/);
+        if (match) {
+          resolvedPassword = `${match[3]}${match[2]}${match[1]}`;
+        } else {
+          const dob = new Date(dateOfBirth);
+          if (!isNaN(dob.getTime())) {
+            const dd = String(dob.getDate()).padStart(2, "0");
+            const mm = String(dob.getMonth() + 1).padStart(2, "0");
+            const yyyy = dob.getFullYear();
+            resolvedPassword = `${dd}${mm}${yyyy}`;
+          }
         }
       }
 
@@ -100,9 +108,21 @@ export async function POST(request: NextRequest) {
           },
         });
         created++;
+
+        if (sendEmail) {
+          emailPromises.push(
+            sendWelcomeEmail(normalizedEmail, name, resolvedPassword).catch((emailErr) => {
+              console.error(`Failed to send welcome email to ${normalizedEmail}:`, emailErr);
+            })
+          );
+        }
       } catch {
         errors.push({ row: i + 1, name, email, reason: "Database error - possibly duplicate entry." });
       }
+    }
+
+    if (emailPromises.length > 0) {
+      await Promise.allSettled(emailPromises);
     }
 
     return NextResponse.json({ success: true, created, skipped, errors });
