@@ -110,11 +110,32 @@ export function WeatherProvider({ children }: { children: React.ReactNode }) {
   const [weather, setWeather] = useState<WeatherDataResponse>(defaultWeather);
   const [isLive, setIsLive] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(null);
+  const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const c = localStorage.getItem("sg_coords");
+        if (c) return JSON.parse(c);
+      } catch (_) {}
+    }
+    return null;
+  });
   /** When null → use browser time (live). When set → manual slider hour (0-24) */
   const [manualHour, setManualHourState] = useState<number | null>(null);
   /** Live browser hour, updated every 30s */
   const [liveHour, setLiveHour] = useState<number>(getCurrentHourFromBrowser());
+
+  const lastFetchIdRef = React.useRef(0);
+  const hasGpsCoordsRef = React.useRef(false);
+
+  // Initialize GPS flag if coords already present in localStorage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const c = localStorage.getItem("sg_coords");
+        if (c) hasGpsCoordsRef.current = true;
+      } catch (_) {}
+    }
+  }, []);
 
   // Keep live hour strictly synchronized with the user's local browser clock
   useEffect(() => {
@@ -152,6 +173,15 @@ export function WeatherProvider({ children }: { children: React.ReactNode }) {
   const moonProgress = useMemo(() => computeMoonProgress(currentHour), [currentHour]);
 
   const fetchWeatherData = useCallback(async (lat?: number, lon?: number) => {
+    const fetchId = ++lastFetchIdRef.current;
+    const isGps = lat !== undefined && lon !== undefined;
+    if (isGps) {
+      hasGpsCoordsRef.current = true;
+    } else if (hasGpsCoordsRef.current) {
+      // Do not overwrite GPS coordinates with a fallback IP fetch
+      return;
+    }
+
     setIsLoading(true);
     try {
       let url = "/api/weather";
@@ -161,28 +191,33 @@ export function WeatherProvider({ children }: { children: React.ReactNode }) {
       const res = await fetch(url);
       if (res.ok) {
         const data: WeatherDataResponse = await res.json();
-        setWeather(data);
-        if (typeof window !== "undefined") {
-          try {
-            localStorage.setItem("sg_weather_cache", JSON.stringify(data));
-          } catch (_) {}
+        if (fetchId === lastFetchIdRef.current) {
+          setWeather(data);
+          if (typeof window !== "undefined") {
+            try {
+              localStorage.setItem("sg_weather_cache", JSON.stringify(data));
+            } catch (_) {}
+          }
         }
       }
     } catch (err) {
       console.error("Failed to load weather:", err);
     } finally {
-      setIsLoading(false);
+      if (fetchId === lastFetchIdRef.current) {
+        setIsLoading(false);
+      }
     }
   }, []);
 
   const searchLocation = useCallback(async (query: string): Promise<boolean> => {
     if (!query || !query.trim()) return false;
+    const fetchId = ++lastFetchIdRef.current;
     setIsLoading(true);
     try {
       const res = await fetch(`/api/weather?city=${encodeURIComponent(query.trim())}`);
       if (res.ok) {
         const data: WeatherDataResponse = await res.json();
-        if (data && data.city) {
+        if (data && data.city && fetchId === lastFetchIdRef.current) {
           setWeather(data);
           setIsLive(true);
           setManualHourState(null);
@@ -200,7 +235,9 @@ export function WeatherProvider({ children }: { children: React.ReactNode }) {
       console.error("Location search error:", err);
       return false;
     } finally {
-      setIsLoading(false);
+      if (fetchId === lastFetchIdRef.current) {
+        setIsLoading(false);
+      }
     }
   }, []);
 
@@ -212,6 +249,7 @@ export function WeatherProvider({ children }: { children: React.ReactNode }) {
           const { latitude, longitude } = position.coords;
           const newCoords = { lat: latitude, lon: longitude };
           setCoords(newCoords);
+          hasGpsCoordsRef.current = true;
           if (typeof window !== "undefined") {
             try {
               localStorage.removeItem("sg_custom_city");
@@ -224,7 +262,7 @@ export function WeatherProvider({ children }: { children: React.ReactNode }) {
           console.warn("GPS Geolocation error:", err.message);
           setIsLoading(false);
         },
-        { timeout: 15000, maximumAge: 0, enableHighAccuracy: true }
+        { timeout: 8000, maximumAge: 300000, enableHighAccuracy: false }
       );
     }
   }, [fetchWeatherData]);
@@ -235,11 +273,14 @@ export function WeatherProvider({ children }: { children: React.ReactNode }) {
     let cachedCoords: { lat: number; lon: number } | null = null;
     if (typeof window !== "undefined") {
       try {
-        const cached = localStorage.getItem("sg_weather_cache");
-        if (cached) setWeather(JSON.parse(cached));
         customCity = localStorage.getItem("sg_custom_city");
         const c = localStorage.getItem("sg_coords");
         if (c) cachedCoords = JSON.parse(c);
+        const cached = localStorage.getItem("sg_weather_cache");
+        if (cached) {
+          const parsedCache = JSON.parse(cached);
+          setWeather(parsedCache);
+        }
       } catch (_) {}
     }
 
@@ -250,28 +291,46 @@ export function WeatherProvider({ children }: { children: React.ReactNode }) {
 
     if (cachedCoords) {
       setCoords(cachedCoords);
+      hasGpsCoordsRef.current = true;
       fetchWeatherData(cachedCoords.lat, cachedCoords.lon);
-    } else {
-      fetchWeatherData();
     }
 
-    // Attempt high-accuracy GPS
+    // Attempt geolocation with fast cached fix first, avoiding race conditions with IP lookup
     if (typeof window !== "undefined" && "geolocation" in navigator) {
+      const handlePosition = (position: GeolocationPosition) => {
+        const { latitude, longitude } = position.coords;
+        const newCoords = { lat: latitude, lon: longitude };
+        setCoords(newCoords);
+        hasGpsCoordsRef.current = true;
+        try {
+          localStorage.removeItem("sg_custom_city");
+          localStorage.setItem("sg_coords", JSON.stringify(newCoords));
+        } catch (_) {}
+        fetchWeatherData(latitude, longitude);
+      };
+
+      const handleFallback = () => {
+        // Only fallback to IP lookup if we don't already have GPS coordinates
+        if (!hasGpsCoordsRef.current) {
+          fetchWeatherData();
+        }
+      };
+
+      // 1. Fast attempt with maximumAge (instant if browser/OS already has fix from permission)
       navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          const newCoords = { lat: latitude, lon: longitude };
-          setCoords(newCoords);
-          try {
-            localStorage.setItem("sg_coords", JSON.stringify(newCoords));
-          } catch (_) {}
-          fetchWeatherData(latitude, longitude);
+        handlePosition,
+        () => {
+          // 2. If fast lookup didn't have cached fix, try standard lookup
+          navigator.geolocation.getCurrentPosition(
+            handlePosition,
+            handleFallback,
+            { timeout: 8000, enableHighAccuracy: true, maximumAge: 60000 }
+          );
         },
-        (err) => {
-          console.warn("GPS geolocation prompt dismissed or denied:", err.message);
-        },
-        { timeout: 15000, maximumAge: 0, enableHighAccuracy: true }
+        { timeout: 4000, enableHighAccuracy: false, maximumAge: 300000 }
       );
+    } else if (!cachedCoords) {
+      fetchWeatherData();
     }
   }, [fetchWeatherData, searchLocation]);
 
@@ -321,8 +380,19 @@ export function WeatherProvider({ children }: { children: React.ReactNode }) {
     setIsLive(true);
     setManualHourState(null);
     setLiveHour(getCurrentHourFromBrowser());
-    if (coords) {
-      fetchWeatherData(coords.lat, coords.lon);
+
+    let activeCoords = coords;
+    if (!activeCoords && typeof window !== "undefined") {
+      try {
+        const c = localStorage.getItem("sg_coords");
+        if (c) activeCoords = JSON.parse(c);
+      } catch (_) {}
+    }
+
+    if (activeCoords) {
+      hasGpsCoordsRef.current = true;
+      setCoords(activeCoords);
+      fetchWeatherData(activeCoords.lat, activeCoords.lon);
     } else {
       fetchWeatherData();
     }
@@ -340,7 +410,19 @@ export function WeatherProvider({ children }: { children: React.ReactNode }) {
         setManualCondition,
         setManualHour,
         resetToLive,
-        refreshWeather: () => fetchWeatherData(coords?.lat, coords?.lon),
+        refreshWeather: () => {
+          let activeCoords = coords;
+          if (!activeCoords && typeof window !== "undefined") {
+            try {
+              const c = localStorage.getItem("sg_coords");
+              if (c) activeCoords = JSON.parse(c);
+            } catch (_) {}
+          }
+          if (activeCoords) {
+            return fetchWeatherData(activeCoords.lat, activeCoords.lon);
+          }
+          return fetchWeatherData();
+        },
         searchLocation,
         requestGpsLocation,
       }}

@@ -291,6 +291,12 @@ function AuthCard() {
         return;
       }
 
+      // Terms not yet accepted → accept terms page
+      if (!data.termsAccepted) {
+        window.location.href = "/accept-terms";
+        return;
+      }
+
       window.location.href = "/";
     } finally {
       setIsSubmitting(false);

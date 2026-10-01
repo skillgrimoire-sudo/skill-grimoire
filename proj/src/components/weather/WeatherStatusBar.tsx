@@ -12,6 +12,8 @@ import {
   MapPin,
   SlidersHorizontal,
   ChevronDown,
+  Minimize2,
+  Maximize2,
 } from "lucide-react";
 
 // Fallback icon component for Sunset
@@ -54,6 +56,7 @@ export default function WeatherStatusBar() {
   } = useWeather();
 
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
 
   // Map condition → icon
   const conditionIcon = () => {
@@ -119,8 +122,70 @@ export default function WeatherStatusBar() {
     #1a1a3e 100%
   )`;
 
+  // Minimized floating pill view
+  if (isMinimized) {
+    return (
+      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[999] transition-all duration-300 ease-in-out">
+        <div
+          onClick={() => setIsMinimized(false)}
+          className="group flex items-center gap-2 sm:gap-3 bg-[#0c1322]/95 hover:bg-[#101a2e]/98 backdrop-blur-xl border border-[#E5B869]/40 hover:border-[#E5B869]/80 rounded-full px-3.5 py-2 shadow-[0_10px_35px_rgba(0,0,0,0.7),0_0_20px_rgba(229,184,105,0.2)] cursor-pointer transition-all duration-200 hover:scale-[1.03]"
+          title="Click to maximize weather controller"
+        >
+          {/* Live / Sim Indicator */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            {conditionIcon()}
+            <span className="text-[10px] font-bold text-[#E5B869] uppercase tracking-wider">
+              {isLive ? "LIVE" : "SIM"}
+            </span>
+            {isLive && (
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+              </span>
+            )}
+          </div>
+
+          <div className="h-3.5 w-px bg-white/15" />
+
+          {/* Location & Temp */}
+          <div className="flex items-center gap-1.5 text-xs">
+            <MapPin className="w-3.5 h-3.5 text-[#E5B869] shrink-0" />
+            <span className="text-white font-semibold truncate max-w-[110px] xs:max-w-[140px] sm:max-w-[180px]" suppressHydrationWarning>
+              {weather.city}
+            </span>
+            <span className="text-gray-400">•</span>
+            <span className="text-[#E5B869] font-bold" suppressHydrationWarning>
+              {weather.temp}°C
+            </span>
+          </div>
+
+          <div className="h-3.5 w-px bg-white/15 hidden xs:block" />
+
+          {/* Current time */}
+          <div className="hidden xs:flex items-center text-[11px] text-gray-300 font-medium tabular-nums" suppressHydrationWarning>
+            {formatHour(currentHour)}
+          </div>
+
+          {/* Maximize Button */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsMinimized(false);
+            }}
+            className="flex items-center gap-1 bg-[#152033] group-hover:bg-[#E5B869] text-gray-200 group-hover:text-black border border-[#E5B869]/30 group-hover:border-[#E5B869] rounded-full px-2 sm:px-2.5 py-1 text-xs font-semibold transition-all duration-150 ml-1 shadow-sm"
+            title="Maximize weather controller"
+            aria-label="Maximize weather controller"
+          >
+            <Maximize2 className="w-3 h-3 text-[#E5B869] group-hover:text-black" />
+            <span className="hidden sm:inline text-[10px] uppercase tracking-wider">Expand</span>
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[999] w-[95%] max-w-4xl">
+    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[999] w-[95%] max-w-4xl transition-all duration-300 ease-in-out">
       {/* Expanded atmosphere selector — renders ABOVE the pill */}
       {isExpanded && (
         <div className="mb-2 bg-[#090e1c]/97 backdrop-blur-2xl border border-[#E5B869]/35 rounded-2xl p-3 shadow-2xl">
@@ -228,6 +293,20 @@ export default function WeatherStatusBar() {
                 <span className="xs:hidden">Live</span>
               </button>
             )}
+
+            {/* Minimize button */}
+            <button
+              onClick={() => {
+                setIsMinimized(true);
+                setIsExpanded(false);
+              }}
+              className="flex items-center gap-1 bg-[#101827] hover:bg-[#192840] text-gray-300 hover:text-[#E5B869] border border-[#E5B869]/30 hover:border-[#E5B869]/60 rounded-full px-2.5 py-1.5 text-xs font-medium transition-all duration-150"
+              title="Minimize weather bar"
+              aria-label="Minimize weather bar"
+            >
+              <Minimize2 className="w-3.5 h-3.5 text-[#E5B869]" />
+              <span className="hidden sm:inline text-[11px]">Minimize</span>
+            </button>
           </div>
         </div>
 

@@ -15,6 +15,7 @@ model User {
   passwordHash       String
   emailVerified      Boolean         @default(false)
   mustChangePassword Boolean         @default(false)
+  termsAcceptedAt    DateTime?       // null = not accepted; set when user accepts T&C
   name               String?
   role               String          @default("STUDENT") // STUDENT, ADMIN
   avatarUrl          String?

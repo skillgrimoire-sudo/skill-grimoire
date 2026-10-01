@@ -14,6 +14,7 @@ interface Student {
   username: string;
   emailVerified: boolean;
   mustChangePassword: boolean;
+  termsAcceptedAt?: string | null;
   studentClass?: string | null;
   gender?: string | null;
   dateOfBirth?: string | null;
@@ -807,7 +808,7 @@ export default function StudentsPage() {
             <table className="w-full min-w-[680px]">
               <thead>
                 <tr className="border-b border-[#1E2D45]">
-                  {["Student","Class","Username","Enrollments","Status","Joined","Actions"].map((h) => (
+                  {["Student","Class","Username","Enrollments","Status","T&C","Joined","Actions"].map((h) => (
                     <th key={h} className="text-left px-4 py-3 text-[11px] text-gray-500 font-semibold uppercase tracking-wider">{h}</th>
                   ))}
                 </tr>
@@ -833,6 +834,11 @@ export default function StudentsPage() {
                       {s.mustChangePassword
                         ? <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/20 whitespace-nowrap"><Clock className="w-2.5 h-2.5" /> Pending Setup</span>
                         : <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/20"><CheckCircle className="w-2.5 h-2.5" /> Active</span>}
+                    </td>
+                    <td className="px-4 py-3.5">
+                      {s.termsAcceptedAt
+                        ? <span title={`Accepted on ${new Date(s.termsAcceptedAt).toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})}`} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/20 whitespace-nowrap cursor-help"><CheckCircle className="w-2.5 h-2.5" /> Accepted</span>
+                        : <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-red-500/15 text-red-400 border border-red-500/20 whitespace-nowrap"><AlertCircle className="w-2.5 h-2.5" /> Pending</span>}
                     </td>
                     <td className="px-4 py-3.5 text-xs text-gray-500 whitespace-nowrap">{new Date(s.createdAt).toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"})}</td>
                     <td className="px-4 py-3.5">

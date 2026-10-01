@@ -78,6 +78,7 @@ export async function POST(request: NextRequest) {
     const response = NextResponse.json({
       success: true,
       mustChangePassword: user.mustChangePassword,
+      termsAccepted: !!user.termsAcceptedAt,
       user: {
         id: user.id,
         email: user.email,
@@ -85,6 +86,7 @@ export async function POST(request: NextRequest) {
         name: user.name,
         role: user.role,
         mustChangePassword: user.mustChangePassword,
+        termsAccepted: !!user.termsAcceptedAt,
       },
     });
 

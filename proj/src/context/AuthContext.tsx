@@ -18,6 +18,7 @@ export interface AuthUser {
   dateOfBirth?: string | null;
   avatarUrl?: string | null;
   mustChangePassword?: boolean;
+  termsAcceptedAt?: string | null;
 }
 
 interface AuthContextType {

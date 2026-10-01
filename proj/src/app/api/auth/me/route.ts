@@ -31,6 +31,7 @@ export async function GET(request: NextRequest) {
         avatarUrl: true,
         emailVerified: true,
         mustChangePassword: true,
+        termsAcceptedAt: true,
         createdAt: true,
       },
     });

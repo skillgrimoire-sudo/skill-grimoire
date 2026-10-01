@@ -201,7 +201,7 @@ function ChangePasswordContent() {
       }
       await refresh();
       setStep("success");
-      setTimeout(() => router.push("/"), 2000);
+      setTimeout(() => router.push("/accept-terms"), 2000);
     } finally {
       setIsSubmitting(false);
     }

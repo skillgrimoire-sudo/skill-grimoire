@@ -23,6 +23,7 @@ export async function GET(request: NextRequest) {
         username: true,
         emailVerified: true,
         mustChangePassword: true,
+        termsAcceptedAt: true,
         createdAt: true,
         studentClass: true,
         gender: true,
