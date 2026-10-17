@@ -437,6 +437,7 @@ function AuthCard() {
               type="email"
               value={loginEmail}
               onChange={setLoginEmail}
+              placeholder="Enter your email"
               icon={<Mail className="w-4 h-4" />}
               autoComplete="email"
             />
@@ -447,6 +448,7 @@ function AuthCard() {
                 type={showLoginPwd ? "text" : "password"}
                 value={loginPassword}
                 onChange={setLoginPassword}
+                placeholder="Enter your password"
                 icon={<Lock className="w-4 h-4" />}
                 autoComplete="current-password"
                 suffix={
@@ -496,6 +498,7 @@ function AuthCard() {
               type="email"
               value={forgotEmail}
               onChange={setForgotEmail}
+              placeholder="Enter your email"
               icon={<Mail className="w-4 h-4" />}
               autoComplete="email"
             />
@@ -554,6 +557,7 @@ function AuthCard() {
                 type={showForgotPwd ? "text" : "password"}
                 value={forgotNewPwd}
                 onChange={setForgotNewPwd}
+                placeholder="Enter your password"
                 icon={<Lock className="w-4 h-4" />}
                 autoComplete="new-password"
                 suffix={
@@ -570,6 +574,7 @@ function AuthCard() {
               type="password"
               value={forgotConfirmPwd}
               onChange={setForgotConfirmPwd}
+              placeholder="Enter your password"
               icon={<Lock className="w-4 h-4" />}
               autoComplete="new-password"
             />

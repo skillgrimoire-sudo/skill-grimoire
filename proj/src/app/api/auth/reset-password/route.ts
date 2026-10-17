@@ -1,16 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyOtp, hashPassword } from "@/lib/auth";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
+
+const MAX_FAILED_ATTEMPTS = 4;
 
 /**
  * POST /api/auth/reset-password
  * Body: { email, otp, newPassword, confirmPassword, type?: "RESET" | "FIRST_LOGIN" }
  *
  * Verifies OTP and updates the user's password.
- * For FIRST_LOGIN type, also sets emailVerified=true and mustChangePassword=false.
+ * Enforces rate limiting, attempt tracking, auto-invalidation after 4 failed attempts,
+ * and uniform error reporting.
  */
 export async function POST(request: NextRequest) {
   try {
+    const ip = getClientIp(request);
+    const ipLimit = checkRateLimit(`reset_ip_${ip}`, 15, 60 * 1000);
+    if (!ipLimit.allowed) {
+      return NextResponse.json(
+        { error: "Too many requests. Please wait a minute before trying again." },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
     const { email, otp, newPassword, confirmPassword, type = "RESET" } = body as {
       email: string;
@@ -32,30 +45,74 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Password must be at least 8 characters." }, { status: 400 });
     }
 
-    if (!/^[A-Z]/.test(newPassword) && !/[A-Z]/.test(newPassword)) {
-      // soft check — allow any 8+ char password
-    }
-
     const normalizedEmail = email.toLowerCase().trim();
 
-    // Find OTP token
+    const emailLimit = checkRateLimit(`reset_email_${normalizedEmail}`, 10, 120 * 1000);
+    if (!emailLimit.allowed) {
+      return NextResponse.json(
+        { error: "Too many requests for this account. Please wait a moment." },
+        { status: 429 }
+      );
+    }
+
+    // ── Find OTP token ────────────────────────────────────────────────────────
     const tokenRecord = await prisma.otpToken.findFirst({
       where: { email: normalizedEmail, type },
       orderBy: { createdAt: "desc" },
     });
 
     if (!tokenRecord) {
-      return NextResponse.json({ error: "No verification code found. Please request a new one." }, { status: 404 });
+      return NextResponse.json({ error: "Invalid or expired verification code. Please request a new one." }, { status: 400 });
     }
 
     if (new Date() > tokenRecord.expiresAt) {
       await prisma.otpToken.delete({ where: { id: tokenRecord.id } });
-      return NextResponse.json({ error: "Code has expired. Please request a new one." }, { status: 410 });
+      return NextResponse.json({ error: "Invalid or expired verification code. Please request a new one." }, { status: 400 });
+    }
+
+    // Parse metadata for attempt tracking
+    let parsedMetadata: Record<string, any> = {};
+    try {
+      if (tokenRecord.metadata) {
+        parsedMetadata = JSON.parse(tokenRecord.metadata);
+      }
+    } catch {
+      parsedMetadata = {};
+    }
+
+    const currentAttempts = typeof parsedMetadata.attempts === "number" ? parsedMetadata.attempts : 0;
+
+    if (currentAttempts >= MAX_FAILED_ATTEMPTS) {
+      await prisma.otpToken.delete({ where: { id: tokenRecord.id } });
+      return NextResponse.json(
+        { error: "Too many failed attempts. For security, this verification code has been invalidated. Please request a new one." },
+        { status: 429 }
+      );
     }
 
     const isValid = await verifyOtp(otp, tokenRecord.tokenHash);
     if (!isValid) {
-      return NextResponse.json({ error: "Incorrect code. Please try again." }, { status: 401 });
+      const nextAttempts = currentAttempts + 1;
+      if (nextAttempts >= MAX_FAILED_ATTEMPTS) {
+        await prisma.otpToken.delete({ where: { id: tokenRecord.id } });
+        return NextResponse.json(
+          { error: "Too many failed attempts. For security, this verification code has been invalidated. Please request a new one." },
+          { status: 429 }
+        );
+      }
+
+      await prisma.otpToken.update({
+        where: { id: tokenRecord.id },
+        data: {
+          metadata: JSON.stringify({ ...parsedMetadata, attempts: nextAttempts }),
+        },
+      });
+
+      const remaining = MAX_FAILED_ATTEMPTS - nextAttempts;
+      return NextResponse.json(
+        { error: `Incorrect verification code. ${remaining} ${remaining === 1 ? "attempt" : "attempts"} remaining before code is invalidated.` },
+        { status: 401 }
+      );
     }
 
     // OTP verified — clean up token

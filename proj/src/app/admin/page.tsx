@@ -478,6 +478,7 @@ export default function AdminLoginPage() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email"
                     autoComplete="email"
                     className="w-full bg-[#080E1C] border border-[#1E2D45] rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder-gray-600 outline-none focus:border-[#E5B869]/60 focus:shadow-[0_0_0_2px_rgba(229,184,105,0.12)] transition-all"
                   />
@@ -493,7 +494,7 @@ export default function AdminLoginPage() {
                   <button
                     type="button"
                     onClick={() => {
-                      setForgotEmail(email || "admin@skillgrimoire.com");
+                      setForgotEmail(email || "");
                       clearErrors();
                       setMode("forgot-email");
                     }}
@@ -512,6 +513,7 @@ export default function AdminLoginPage() {
                     type={showPwd ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter your password"
                     autoComplete="current-password"
                     className="w-full bg-[#080E1C] border border-[#1E2D45] rounded-xl pl-9 pr-10 py-2.5 text-sm text-white placeholder-gray-600 outline-none focus:border-[#E5B869]/60 focus:shadow-[0_0_0_2px_rgba(229,184,105,0.12)] transition-all"
                   />
@@ -555,6 +557,7 @@ export default function AdminLoginPage() {
                     type="email"
                     value={forgotEmail}
                     onChange={(e) => setForgotEmail(e.target.value)}
+                    placeholder="Enter your email"
                     autoFocus
                     className="w-full bg-[#080E1C] border border-[#1E2D45] rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder-gray-600 outline-none focus:border-[#E5B869]/60 focus:shadow-[0_0_0_2px_rgba(229,184,105,0.12)] transition-all"
                   />
@@ -639,6 +642,7 @@ export default function AdminLoginPage() {
                     type={showForgotPwd ? "text" : "password"}
                     value={forgotNewPwd}
                     onChange={(e) => setForgotNewPwd(e.target.value)}
+                    placeholder="Enter your password"
                     autoFocus
                     className="w-full bg-[#080E1C] border border-[#1E2D45] rounded-xl pl-9 pr-10 py-2.5 text-sm text-white placeholder-gray-600 outline-none focus:border-[#E5B869]/60 focus:shadow-[0_0_0_2px_rgba(229,184,105,0.12)] transition-all"
                   />
@@ -666,6 +670,7 @@ export default function AdminLoginPage() {
                     type={showForgotConfirmPwd ? "text" : "password"}
                     value={forgotConfirmPwd}
                     onChange={(e) => setForgotConfirmPwd(e.target.value)}
+                    placeholder="Enter your password"
                     className="w-full bg-[#080E1C] border border-[#1E2D45] rounded-xl pl-9 pr-10 py-2.5 text-sm text-white placeholder-gray-600 outline-none focus:border-[#E5B869]/60 focus:shadow-[0_0_0_2px_rgba(229,184,105,0.12)] transition-all"
                   />
                   <button
