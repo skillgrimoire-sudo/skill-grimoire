@@ -45,6 +45,15 @@ export default function AdminsManagementPage() {
   const [actionSuccess, setActionSuccess] = useState<string | null>(null);
   const [copiedEmail, setCopiedEmail] = useState<string | null>(null);
 
+  // Secret token gate state
+  const [secretKey, setSecretKey] = useState<string>("");
+  const [editingKey, setEditingKey] = useState<string>("");
+  const [isEditingKey, setIsEditingKey] = useState<boolean>(false);
+  const [savingKey, setSavingKey] = useState<boolean>(false);
+  const [showSecretKey, setShowSecretKey] = useState<boolean>(false);
+  const [copiedKeyUrl, setCopiedKeyUrl] = useState<boolean>(false);
+  const [copiedRawKey, setCopiedRawKey] = useState<boolean>(false);
+
   // Form state
   const [formName, setFormName] = useState("");
   const [formEmail, setFormEmail] = useState("");
@@ -72,9 +81,62 @@ export default function AdminsManagementPage() {
     }
   }, []);
 
+  const fetchSecretKey = useCallback(async () => {
+    try {
+      const res = await fetch("/api/admin/secret-key");
+      const data = await res.json();
+      if (data.success && data.secretKey) {
+        setSecretKey(data.secretKey);
+        setEditingKey(data.secretKey);
+      }
+    } catch {
+      // silent fail or handled by page
+    }
+  }, []);
+
   useEffect(() => {
     fetchAdmins();
-  }, [fetchAdmins]);
+    fetchSecretKey();
+  }, [fetchAdmins, fetchSecretKey]);
+
+  const handleSaveSecretKey = async () => {
+    if (!editingKey.trim()) {
+      setActionError("Secret key cannot be empty.");
+      return;
+    }
+    setSavingKey(true);
+    setActionError(null);
+    try {
+      const res = await fetch("/api/admin/secret-key", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ secretKey: editingKey.trim() }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSecretKey(data.secretKey);
+        setIsEditingKey(false);
+        setActionSuccess("Admin Portal Secret Key updated successfully! Access via the new link.");
+      } else {
+        setActionError(data.error || "Failed to update secret key.");
+      }
+    } catch {
+      setActionError("Network error while saving secret key.");
+    } finally {
+      setSavingKey(false);
+    }
+  };
+
+  const generateRandomSecretKey = () => {
+    const chars = "abcdefghjkmnpqrstuvwxyz23456789";
+    let rand = "";
+    for (let i = 0; i < 16; i++) {
+      rand += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    const newKey = `sg-portal-${rand}`;
+    setEditingKey(newKey);
+    setIsEditingKey(true);
+  };
 
   const generateRandomPassword = () => {
     const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%&*";
@@ -273,6 +335,145 @@ export default function AdminsManagementPage() {
           </div>
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#E5B869] to-[#C69234] flex items-center justify-center text-black font-bold">
             {(admins.find((a) => a.id === currentAdminId)?.name?.[0] || "A").toUpperCase()}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Admin Portal Secret Access Key Card ── */}
+      <div className="p-6 rounded-2xl bg-gradient-to-br from-[#0B1525] to-[#060C18] border border-[#E5B869]/30 shadow-[0_4px_30px_rgba(229,184,105,0.08)] space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E5B869]/10 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-[#E5B869]/10 border border-[#E5B869]/30 flex items-center justify-center text-[#E5B869] shrink-0">
+              <KeyRound className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="text-sm font-bold text-white flex items-center gap-2">
+                <span>Secret Admin Portal Gate</span>
+                <span className="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+                  Active Protection
+                </span>
+              </div>
+              <p className="text-xs text-gray-400 mt-0.5">
+                The public <code className="text-[#E5B869] font-mono">/admin</code> URL is hidden and returns <span className="text-rose-400 font-semibold">404 Not Found</span> to anyone without this secret key.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {!isEditingKey ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setEditingKey(secretKey);
+                  setIsEditingKey(true);
+                }}
+                className="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-white bg-white/5 hover:bg-white/10 border border-white/10 transition cursor-pointer"
+              >
+                Change Key
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => {
+                  setEditingKey(secretKey);
+                  setIsEditingKey(false);
+                }}
+                className="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-gray-400 hover:text-white bg-white/5 transition cursor-pointer"
+              >
+                Cancel
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={generateRandomSecretKey}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold text-black bg-[#E5B869] hover:brightness-110 transition cursor-pointer"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Regenerate Key</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Secret Key Input / Display */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+          {/* Secret Key */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wide flex items-center justify-between">
+              <span>Secret Gate Key</span>
+              <span className="text-[10px] text-gray-500 lowercase">saved in database</span>
+            </label>
+            <div className="flex gap-2">
+              <div className="relative flex-1">
+                <input
+                  type={showSecretKey ? "text" : "password"}
+                  value={isEditingKey ? editingKey : secretKey}
+                  onChange={(e) => setEditingKey(e.target.value)}
+                  readOnly={!isEditingKey}
+                  placeholder="Secret key..."
+                  className={`w-full bg-[#080E1C] border ${isEditingKey ? "border-[#E5B869] shadow-[0_0_12px_rgba(229,184,105,0.2)]" : "border-[#1E2D45]"} rounded-xl pl-3 pr-10 py-2 text-xs font-mono text-white outline-none`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowSecretKey(!showSecretKey)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition cursor-pointer"
+                >
+                  {showSecretKey ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                </button>
+              </div>
+
+              {isEditingKey ? (
+                <button
+                  type="button"
+                  onClick={handleSaveSecretKey}
+                  disabled={savingKey || !editingKey.trim()}
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-black bg-gradient-to-r from-[#F5D075] to-[#E5B869] hover:brightness-110 disabled:opacity-50 transition cursor-pointer flex items-center gap-1.5 shrink-0"
+                >
+                  {savingKey ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
+                  <span>Save</span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText(secretKey);
+                    setCopiedRawKey(true);
+                    setTimeout(() => setCopiedRawKey(false), 2000);
+                  }}
+                  className="px-3 py-2 rounded-xl text-xs font-medium text-gray-300 bg-white/5 hover:bg-white/10 border border-white/10 transition cursor-pointer flex items-center gap-1.5 shrink-0"
+                >
+                  {copiedRawKey ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                  <span>{copiedRawKey ? "Copied" : "Copy"}</span>
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Secret Portal URL */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wide">
+              Direct Admin Access Link
+            </label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                readOnly
+                value={typeof window !== "undefined" ? `${window.location.origin}/admin?key=${secretKey}` : `/admin?key=${secretKey}`}
+                className="flex-1 bg-[#080E1C] border border-[#1E2D45] rounded-xl px-3 py-2 text-xs font-mono text-[#E5B869] truncate outline-none select-all"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  const url = `${window.location.origin}/admin?key=${secretKey}`;
+                  navigator.clipboard.writeText(url);
+                  setCopiedKeyUrl(true);
+                  setTimeout(() => setCopiedKeyUrl(false), 2000);
+                }}
+                className="px-3.5 py-2 rounded-xl text-xs font-bold text-black bg-gradient-to-r from-[#F5D075] via-[#E5B869] to-[#C69234] hover:brightness-110 shadow-[0_2px_12px_rgba(229,184,105,0.25)] transition cursor-pointer flex items-center gap-1.5 shrink-0"
+              >
+                {copiedKeyUrl ? <Check className="w-3.5 h-3.5 text-black" /> : <Copy className="w-3.5 h-3.5" />}
+                <span>{copiedKeyUrl ? "Link Copied!" : "Copy Portal Link"}</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
