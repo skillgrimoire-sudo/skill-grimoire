@@ -162,10 +162,23 @@ function ChangePasswordContent() {
     setError("");
     setIsSubmitting(true);
     try {
-      // Verify OTP by attempting reset — but we only go to next step, actual password change happens on step 3
-      // We'll verify by calling reset-password with type FIRST_LOGIN but without the password yet,
-      // Actually: just store otp and proceed — verification happens on reset-password call
+      const res = await fetch("/api/auth/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: user!.email,
+          otp,
+          type: user!.mustChangePassword ? "FIRST_LOGIN" : "RESET",
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Incorrect verification code. Please try again.");
+        return;
+      }
       setStep("set-password");
+    } catch {
+      setError("Failed to verify code. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -332,7 +345,6 @@ function ChangePasswordContent() {
                       type={showPwd ? "text" : "password"}
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
-                      placeholder="Min. 8 characters"
                       autoComplete="new-password"
                       className="w-full bg-[#080E1C] border border-[#1E2D45] rounded-xl pl-9 pr-10 py-2.5 text-sm text-white placeholder-gray-600 outline-none focus:border-[#E5B869]/60 transition-all"
                     />
@@ -350,7 +362,6 @@ function ChangePasswordContent() {
                       type="password"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      placeholder="Repeat your password"
                       autoComplete="new-password"
                       className={`w-full bg-[#080E1C] border rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder-gray-600 outline-none transition-all ${
                         confirmPassword && confirmPassword !== newPassword

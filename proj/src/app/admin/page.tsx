@@ -273,14 +273,36 @@ export default function AdminLoginPage() {
   };
 
   // ── Handle Forgot: Verify OTP & Proceed ─────────────────────────────────────
-  const handleVerifyOtp = (e: React.FormEvent) => {
+  const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     clearErrors();
     if (forgotOtp.length !== 6) {
       setError("Please enter the complete 6-digit code.");
       return;
     }
-    setMode("forgot-new-pwd");
+
+    setIsSubmitting(true);
+    try {
+      const res = await fetch("/api/auth/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: forgotEmail.trim(),
+          otp: forgotOtp,
+          type: "RESET",
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Incorrect verification code.");
+        return;
+      }
+      setMode("forgot-new-pwd");
+    } catch {
+      setError("Failed to verify code. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // ── Handle Forgot: Set New Password ─────────────────────────────────────────
@@ -456,7 +478,6 @@ export default function AdminLoginPage() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="admin@skillgrimoire.com"
                     autoComplete="email"
                     className="w-full bg-[#080E1C] border border-[#1E2D45] rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder-gray-600 outline-none focus:border-[#E5B869]/60 focus:shadow-[0_0_0_2px_rgba(229,184,105,0.12)] transition-all"
                   />
@@ -491,7 +512,6 @@ export default function AdminLoginPage() {
                     type={showPwd ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Your password"
                     autoComplete="current-password"
                     className="w-full bg-[#080E1C] border border-[#1E2D45] rounded-xl pl-9 pr-10 py-2.5 text-sm text-white placeholder-gray-600 outline-none focus:border-[#E5B869]/60 focus:shadow-[0_0_0_2px_rgba(229,184,105,0.12)] transition-all"
                   />
@@ -535,7 +555,6 @@ export default function AdminLoginPage() {
                     type="email"
                     value={forgotEmail}
                     onChange={(e) => setForgotEmail(e.target.value)}
-                    placeholder="admin@skillgrimoire.com"
                     autoFocus
                     className="w-full bg-[#080E1C] border border-[#1E2D45] rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder-gray-600 outline-none focus:border-[#E5B869]/60 focus:shadow-[0_0_0_2px_rgba(229,184,105,0.12)] transition-all"
                   />
@@ -584,7 +603,11 @@ export default function AdminLoginPage() {
                 disabled={isSubmitting || forgotOtp.length !== 6}
                 className="w-full py-2.5 rounded-xl font-bold text-sm text-black bg-gradient-to-r from-[#F5D075] via-[#E5B869] to-[#C69234] hover:brightness-110 shadow-[0_4px_20px_rgba(229,184,105,0.35)] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
               >
-                Continue <ArrowRight className="w-4 h-4" />
+                {isSubmitting ? (
+                  <span className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <>Verify Code <ArrowRight className="w-4 h-4" /></>
+                )}
               </button>
 
               <button
@@ -616,7 +639,6 @@ export default function AdminLoginPage() {
                     type={showForgotPwd ? "text" : "password"}
                     value={forgotNewPwd}
                     onChange={(e) => setForgotNewPwd(e.target.value)}
-                    placeholder="At least 8 characters"
                     autoFocus
                     className="w-full bg-[#080E1C] border border-[#1E2D45] rounded-xl pl-9 pr-10 py-2.5 text-sm text-white placeholder-gray-600 outline-none focus:border-[#E5B869]/60 focus:shadow-[0_0_0_2px_rgba(229,184,105,0.12)] transition-all"
                   />
@@ -644,7 +666,6 @@ export default function AdminLoginPage() {
                     type={showForgotConfirmPwd ? "text" : "password"}
                     value={forgotConfirmPwd}
                     onChange={(e) => setForgotConfirmPwd(e.target.value)}
-                    placeholder="Repeat new password"
                     className="w-full bg-[#080E1C] border border-[#1E2D45] rounded-xl pl-9 pr-10 py-2.5 text-sm text-white placeholder-gray-600 outline-none focus:border-[#E5B869]/60 focus:shadow-[0_0_0_2px_rgba(229,184,105,0.12)] transition-all"
                   />
                   <button

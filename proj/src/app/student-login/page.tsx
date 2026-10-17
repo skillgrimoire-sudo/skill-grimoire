@@ -187,7 +187,7 @@ function InputField({
   type: string;
   value: string;
   onChange: (v: string) => void;
-  placeholder: string;
+  placeholder?: string;
   icon: React.ReactNode;
   suffix?: React.ReactNode;
   error?: string;
@@ -208,7 +208,7 @@ function InputField({
           type={type}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          placeholder={placeholder}
+          placeholder={placeholder || ""}
           autoComplete={autoComplete}
           className={`
             w-full bg-[#080E1C] border rounded-xl pl-9 ${suffix ? "pr-10" : "pr-4"} py-2.5
@@ -323,6 +323,37 @@ function AuthCard() {
     }
   };
 
+  // ── Forgot: Verify OTP ──────────────────────────────────────────────────────
+  const handleForgotVerifyOtp = async () => {
+    if (forgotOtp.length !== 6) {
+      setError("Please enter the complete 6-digit code.");
+      return;
+    }
+    clearErrors();
+    setIsSubmitting(true);
+    try {
+      const res = await fetch("/api/auth/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: forgotEmail.trim(),
+          otp: forgotOtp,
+          type: "RESET",
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Incorrect verification code. Please try again.");
+        return;
+      }
+      setMode("forgot-step3");
+    } catch {
+      setError("Failed to verify code. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   // ── Forgot: Reset Password ──────────────────────────────────────────────────
   const handleForgotReset = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -406,7 +437,6 @@ function AuthCard() {
               type="email"
               value={loginEmail}
               onChange={setLoginEmail}
-              placeholder="you@example.com"
               icon={<Mail className="w-4 h-4" />}
               autoComplete="email"
             />
@@ -417,7 +447,6 @@ function AuthCard() {
                 type={showLoginPwd ? "text" : "password"}
                 value={loginPassword}
                 onChange={setLoginPassword}
-                placeholder="Your password"
                 icon={<Lock className="w-4 h-4" />}
                 autoComplete="current-password"
                 suffix={
@@ -467,7 +496,6 @@ function AuthCard() {
               type="email"
               value={forgotEmail}
               onChange={setForgotEmail}
-              placeholder="you@example.com"
               icon={<Mail className="w-4 h-4" />}
               autoComplete="email"
             />
@@ -499,15 +527,16 @@ function AuthCard() {
             <OtpInput value={forgotOtp} onChange={setForgotOtp} disabled={isSubmitting} />
             <ResendTimer email={forgotEmail} onResend={() => { setForgotOtp(""); clearErrors(); }} />
             <button
-              onClick={() => {
-                if (forgotOtp.length !== 6) { setError("Please enter the 6-digit code first."); return; }
-                clearErrors();
-                setMode("forgot-step3");
-              }}
+              type="button"
+              onClick={handleForgotVerifyOtp}
               disabled={isSubmitting || forgotOtp.length !== 6}
               className="w-full py-2.5 rounded-xl font-bold text-sm text-black bg-gradient-to-r from-[#F5D075] via-[#E5B869] to-[#C69234] hover:brightness-110 shadow-[0_4px_20px_rgba(229,184,105,0.35)] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
             >
-              Verify Code <ArrowRight className="w-4 h-4" />
+              {isSubmitting ? (
+                <span className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <>Verify Code <ArrowRight className="w-4 h-4" /></>
+              )}
             </button>
             <button type="button" onClick={() => setMode("forgot-step1")} className="w-full text-xs text-gray-500 hover:text-gray-300 transition">
               ← Change email
@@ -525,7 +554,6 @@ function AuthCard() {
                 type={showForgotPwd ? "text" : "password"}
                 value={forgotNewPwd}
                 onChange={setForgotNewPwd}
-                placeholder="Min. 8 characters"
                 icon={<Lock className="w-4 h-4" />}
                 autoComplete="new-password"
                 suffix={
@@ -542,7 +570,6 @@ function AuthCard() {
               type="password"
               value={forgotConfirmPwd}
               onChange={setForgotConfirmPwd}
-              placeholder="Repeat your password"
               icon={<Lock className="w-4 h-4" />}
               autoComplete="new-password"
             />

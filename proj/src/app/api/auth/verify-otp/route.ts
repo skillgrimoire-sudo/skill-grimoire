@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     const { email, otp, type } = body as {
       email: string;
       otp: string;
-      type: "SIGNUP" | "LOGIN";
+      type: "SIGNUP" | "LOGIN" | "RESET" | "FIRST_LOGIN";
     };
 
     if (!email || !otp || !type) {
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const normalizedEmail = email.toLowerCase();
+    const normalizedEmail = email.toLowerCase().trim();
 
     // ── Find the OTP record ───────────────────────────────────────────────────
     const tokenRecord = await prisma.otpToken.findFirst({
@@ -63,6 +63,15 @@ export async function POST(request: NextRequest) {
         { error: "Incorrect verification code. Please try again." },
         { status: 401 }
       );
+    }
+
+    // For password reset / first login flows, confirm OTP validity without deleting,
+    // allowing reset-password endpoint to perform final check and consumption.
+    if (type === "RESET" || type === "FIRST_LOGIN") {
+      return NextResponse.json({
+        success: true,
+        message: "Verification code confirmed successfully.",
+      });
     }
 
     // OTP verified — delete the used token

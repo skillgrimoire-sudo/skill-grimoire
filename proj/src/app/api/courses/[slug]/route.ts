@@ -9,19 +9,38 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const { slug } = await params;
-    const token = request.cookies.get(SESSION_COOKIE)?.value;
-    const payload = token ? await verifyJwt(token) : null;
-    const userEmail = payload?.email;
+    const token =
+      request.cookies.get(SESSION_COOKIE)?.value ||
+      request.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
 
-    let targetClass = null;
-
-    if (userEmail) {
-      const student = await prisma.user.findUnique({
-        where: { email: userEmail },
-      });
-      targetClass = student?.studentClass;
+    if (!token) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 }
+      );
     }
+
+    const payload = await verifyJwt(token);
+    if (!payload || !payload.userId) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    const student = await prisma.user.findUnique({
+      where: { id: payload.userId },
+    });
+
+    if (!student) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    const targetClass = student.studentClass;
+    const { slug } = await params;
 
     const course = await prisma.course.findUnique({
       where: { slug },
@@ -38,8 +57,8 @@ export async function GET(
       return NextResponse.json({ success: false, error: "Course not found" }, { status: 404 });
     }
 
-    // Verify course class restriction if applicable
-    if (course.targetClass && course.targetClass.trim() !== "") {
+    // Verify course class restriction if applicable (admins bypass)
+    if (payload.role !== "ADMIN" && course.targetClass && course.targetClass.trim() !== "") {
       if (!targetClass) {
         return NextResponse.json({ success: false, error: "Unauthorized for this class" }, { status: 403 });
       }
