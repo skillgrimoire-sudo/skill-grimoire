@@ -350,6 +350,8 @@ export default function AdminLoginClient({ activeKey }: { activeKey?: string }) 
         return;
       }
       setMode("forgot-success");
+    } catch {
+      setError("Something went wrong while resetting your password. Please try again.");
     } finally {
       setIsSubmitting(false);
     }

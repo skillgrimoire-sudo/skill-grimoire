@@ -375,8 +375,10 @@ function AuthCard() {
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error || "Reset failed."); return; }
-      setMode("forgot-success");
-    } finally {
+        setMode("forgot-success");
+       } catch {
+         setError("Something went wrong while resetting your password. Please try again.");
+       } finally {
       setIsSubmitting(false);
     }
   };

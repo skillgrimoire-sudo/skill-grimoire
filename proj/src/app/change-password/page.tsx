@@ -215,6 +215,8 @@ function ChangePasswordContent() {
       await refresh();
       setStep("success");
       setTimeout(() => router.push("/accept-terms"), 2000);
+    } catch {
+      setError("Something went wrong while setting your password. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
