@@ -143,6 +143,9 @@ export async function POST(request: NextRequest) {
 }
 
 
-   export async function GET(request: NextRequest) {
-     return NextResponse.redirect(new URL("/student-login", request.url));
-   }
+  export async function GET() {
+    return new Response(null, {
+      status: 307,
+      headers: { Location: "/student-login" },
+    });
+  }
