@@ -4,8 +4,8 @@ import { verifyPassword, signJwt, setSessionCookie } from "@/lib/auth";
 import { checkRateLimit, refundRateLimit, getClientIp } from "@/lib/rate-limit";
 
 // Brute-force protection: max 10 login attempts per IP address every 5 minutes.
-const LOGIN_MAX_ATTEMPTS = 10;
-const LOGIN_WINDOW_MS = 5 * 60 * 1000;
+const LOGIN_MAX_ATTEMPTS = 5;
+const LOGIN_WINDOW_MS = 60 * 60 * 1000;
 
 /**
  * POST /api/auth/login
