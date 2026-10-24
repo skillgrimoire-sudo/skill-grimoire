@@ -16,7 +16,7 @@ const MAX_FAILED_ATTEMPTS = 4;
 export async function POST(request: NextRequest) {
   try {
     const ip = getClientIp(request);
-    const ipLimit = checkRateLimit(`reset_ip_${ip}`, 15, 60 * 1000);
+    const ipLimit = await checkRateLimit(`reset_ip_${ip}`, 15, 60 * 1000);
     if (!ipLimit.allowed) {
       return NextResponse.json(
         { error: "Too many requests. Please wait a minute before trying again." },
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
 
     const normalizedEmail = email.toLowerCase().trim();
 
-    const emailLimit = checkRateLimit(`reset_email_${normalizedEmail}`, 10, 120 * 1000);
+    const emailLimit = await checkRateLimit(`reset_email_${normalizedEmail}`, 10, 120 * 1000);
     if (!emailLimit.allowed) {
       return NextResponse.json(
         { error: "Too many requests for this account. Please wait a moment." },

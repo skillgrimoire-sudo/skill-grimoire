@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyPassword, signJwt, setSessionCookie } from "@/lib/auth";
+import { checkRateLimit, refundRateLimit, getClientIp } from "@/lib/rate-limit";
+
+// Brute-force protection: max 10 login attempts per IP address every 5 minutes.
+const LOGIN_MAX_ATTEMPTS = 10;
+const LOGIN_WINDOW_MS = 5 * 60 * 1000;
 
 /**
  * POST /api/auth/login
@@ -11,6 +16,20 @@ import { verifyPassword, signJwt, setSessionCookie } from "@/lib/auth";
  */
 export async function POST(request: NextRequest) {
   try {
+    // ── IP rate limit (checked before touching the database or passwords) ──
+    const ip = getClientIp(request);
+    const rateKey = `login_ip_${ip}`;
+    const ipLimit = await checkRateLimit(rateKey, LOGIN_MAX_ATTEMPTS, LOGIN_WINDOW_MS);
+    if (!ipLimit.allowed) {
+      const minutes = Math.ceil(ipLimit.resetInSec / 60);
+      return NextResponse.json(
+        {
+          error: `Too many login attempts. Please try again in ${minutes} minute${minutes === 1 ? "" : "s"}.`,
+        },
+        { status: 429, headers: { "Retry-After": String(ipLimit.resetInSec) } }
+      );
+    }
+
     const body = await request.json();
     const { email, password } = body as { email: string; password: string };
 
@@ -55,6 +74,7 @@ export async function POST(request: NextRequest) {
         isAdmin: true,
       });
 
+      await refundRateLimit(rateKey); // successful login doesn't count
       return await setSessionCookie(response, token);
     }
 
@@ -90,6 +110,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    await refundRateLimit(rateKey); // successful login doesn't count
     return await setSessionCookie(response, token);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);

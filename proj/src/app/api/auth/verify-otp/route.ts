@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     const ip = getClientIp(request);
     
     // ── 1. Global IP Rate Limit (15 req / min) ──────────────────────────────
-    const ipLimit = checkRateLimit(`verify_ip_${ip}`, 15, 60 * 1000);
+    const ipLimit = await checkRateLimit(`verify_ip_${ip}`, 15, 60 * 1000);
     if (!ipLimit.allowed) {
       return NextResponse.json(
         { error: "Too many requests. Please wait a minute before trying again." },
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
     const normalizedEmail = email.toLowerCase().trim();
 
     // ── 2. Per-Email Rate Limit (10 req / 2 min) ────────────────────────────
-    const emailLimit = checkRateLimit(`verify_email_${normalizedEmail}`, 10, 120 * 1000);
+    const emailLimit = await checkRateLimit(`verify_email_${normalizedEmail}`, 10, 120 * 1000);
     if (!emailLimit.allowed) {
       return NextResponse.json(
         { error: "Too many requests for this account. Please wait a moment." },

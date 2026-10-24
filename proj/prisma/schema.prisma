@@ -205,3 +205,12 @@ model SystemSetting {
   updatedAt DateTime @updatedAt
 }
 
+// Shared login / OTP attempt counters (see src/lib/rate-limit.ts)
+model RateLimit {
+  key     String   @id
+  count   Int      @default(0)
+  resetAt DateTime @db.Timestamptz(3)
+
+  @@index([resetAt])
+}
+
