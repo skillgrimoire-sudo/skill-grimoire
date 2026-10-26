@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { hashPassword } from "@/lib/auth";
+import { hashPassword, revokeAllSessions } from "@/lib/auth";
 import { requireAdmin } from "@/lib/admin-auth";
 
 /**
@@ -70,6 +70,11 @@ export async function PUT(
         emailVerified: true,
       },
     });
+
+    // Admin changed or reset this student's password: log the student out everywhere.
+    if (newPassword || resetPassword) {
+      await revokeAllSessions(id);
+    }
 
     return NextResponse.json({ success: true, student });
   } catch (err) {

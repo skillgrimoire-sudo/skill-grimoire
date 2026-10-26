@@ -1,6 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { verifyPassword, hashPassword, verifyJwt, SESSION_COOKIE } from "@/lib/auth";
+import {
+  verifyPassword,
+  hashPassword,
+  verifyJwt,
+  signJwt,
+  setSessionCookie,
+  revokeAllSessions,
+  SESSION_COOKIE,
+} from "@/lib/auth";
 
 /**
  * POST /api/auth/change-password
@@ -70,7 +78,18 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    return NextResponse.json({ success: true, message: "Password updated successfully." });
+    // Log out every other session, then keep this device logged in.
+    const newVersion = await revokeAllSessions(user.id);
+    const newToken = await signJwt({
+      userId: user.id,
+      email: user.email,
+      username: user.username,
+      role: user.role,
+      sv: newVersion,
+    });
+
+    const response = NextResponse.json({ success: true, message: "Password updated successfully." });
+    return await setSessionCookie(response, newToken);
   } catch (err) {
     console.error("[POST /api/auth/change-password]", err);
     return NextResponse.json({ error: "Failed to change password." }, { status: 500 });

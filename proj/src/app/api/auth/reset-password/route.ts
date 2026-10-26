@@ -1,6 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { verifyOtp, hashPassword } from "@/lib/auth";
+import {
+  verifyOtp,
+  hashPassword,
+  verifyJwt,
+  signJwt,
+  setSessionCookie,
+  revokeAllSessions,
+  SESSION_COOKIE,
+} from "@/lib/auth";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 const MAX_FAILED_ATTEMPTS = 4;
@@ -135,7 +143,33 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    return NextResponse.json({ success: true, message: "Password has been reset successfully. You can now log in." });
+    // Was this request made from a session belonging to this same user
+    // (e.g. the first-login "set your password" page)? Check BEFORE revoking.
+    const existingToken = request.cookies.get(SESSION_COOKIE)?.value;
+    const existingSession = existingToken ? await verifyJwt(existingToken) : null;
+    const keepCurrentDeviceLoggedIn = existingSession?.userId === user.id;
+
+    // Log the user out everywhere — any stolen/old session stops working now.
+    const newVersion = await revokeAllSessions(user.id);
+
+    const response = NextResponse.json({
+      success: true,
+      message: "Password has been reset successfully. You can now log in.",
+    });
+
+    if (keepCurrentDeviceLoggedIn) {
+      // Re-issue a fresh session for the device that made the change.
+      const token = await signJwt({
+        userId: user.id,
+        email: user.email,
+        username: user.username,
+        role: user.role,
+        sv: newVersion,
+      });
+      return await setSessionCookie(response, token);
+    }
+
+    return response;
   } catch (err) {
     console.error("[POST /api/auth/reset-password]", err);
     return NextResponse.json({ error: "Failed to reset password." }, { status: 500 });

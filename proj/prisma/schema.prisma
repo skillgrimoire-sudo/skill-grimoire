@@ -214,3 +214,10 @@ model RateLimit {
   @@index([resetAt])
 }
 
+// Bumped on every password change/reset; session tokens carrying an older
+// version are rejected (see src/lib/auth.ts)
+model SessionVersion {
+  userId    String   @id
+  version   Int      @default(0)
+  updatedAt DateTime @default(now()) @db.Timestamptz(3)
+}
