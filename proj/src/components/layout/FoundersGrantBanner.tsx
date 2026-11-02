@@ -1,22 +1,45 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { ArrowUpRight, Sparkles } from "lucide-react";
+import { ArrowRight, Trophy } from "lucide-react";
 
 /**
  * FoundersGrantBanner:
- * Scrolling announcement bar shown at the very top of every public page.
+ * Bold scrolling announcement bar at the very top of every public page.
  * The whole bar links to the Founder's Grant Challenge page (/register).
  * Hidden on admin pages. To remove it after the event, delete <FoundersGrantBanner /> from app/layout.tsx.
+ *
+ * To change the wording, edit ITEMS below.
+ *   kind "title" → large gold-on-black headline
+ *   kind "prize" → black chip with gold text (stands out most)
+ *   no kind      → bold dark text on the gold strip
  */
-const ITEMS = [
-  "Founder’s Grant Challenge 2027",
-  "₹3 Lakh+ prize pool",
-  "Free registration for UG and PG students",
-  "Teams of 2–4 · 10 sectors · All of India",
-  "Registration: 8 Nov 2026 – 31 Jan 2027",
-  "Grand Finals: 7–9 May 2027, Bengaluru",
+type Item = { text: string; kind?: "title" | "prize" };
+
+const ITEMS: Item[] = [
+  { text: "Founder’s Grant Challenge 2027", kind: "title" },
+  { text: "₹3 Lakh+ Prize Pool", kind: "prize" },
+  { text: "Free Registration" },
+  { text: "UG & PG Students · All of India" },
+  { text: "Team of 2–4 Members · 10 Sectors" },
+  { text: "Registration: 8 Nov 2026 – 31 Jan 2027" },
+  { text: "Grand Finals: 7–9 May 2027, Bengaluru" },
 ];
+
+function Piece({ item }: { item: Item }) {
+  if (item.kind === "title") {
+    return <span className="fgc-title">{item.text}</span>;
+  }
+  if (item.kind === "prize") {
+    return (
+      <span className="fgc-prize">
+        <Trophy className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
+        {item.text}
+      </span>
+    );
+  }
+  return <span className="fgc-item">{item.text}</span>;
+}
 
 export default function FoundersGrantBanner() {
   const pathname = usePathname();
@@ -24,10 +47,10 @@ export default function FoundersGrantBanner() {
 
   const row = (copy: number) => (
     <div className="fgc-marquee-group" aria-hidden={copy > 0 ? true : undefined}>
-      {ITEMS.map((text) => (
-        <span key={`${copy}-${text}`} className="inline-flex items-center gap-3 px-5 whitespace-nowrap">
-          <Sparkles className="w-3.5 h-3.5 shrink-0 opacity-70" aria-hidden="true" />
-          {text}
+      {ITEMS.map((item) => (
+        <span key={`${copy}-${item.text}`} className="inline-flex items-center">
+          <Piece item={item} />
+          <span className="fgc-sep" aria-hidden="true">✦</span>
         </span>
       ))}
     </div>
@@ -36,23 +59,30 @@ export default function FoundersGrantBanner() {
   return (
     <a
       href="/register"
-      aria-label="Founder’s Grant Challenge 2027: national innovation challenge for UG and PG students. Free registration. Open the page."
-      className="fgc-banner group relative flex items-center w-full h-10 overflow-hidden text-[#140E05] text-[13px] font-semibold tracking-wide no-underline"
+      aria-label="Founder’s Grant Challenge 2027: national innovation challenge for UG and PG students. ₹3 Lakh+ prize pool. Free registration. Register now."
+      className="fgc-banner group relative flex items-stretch w-full overflow-hidden no-underline"
     >
-      <span className="hidden sm:inline-flex items-center h-full shrink-0 px-4 bg-[#070B12] text-[#F7D794] font-serif text-[12px] tracking-[0.18em] uppercase">
-        National Challenge
+      {/* Left badge */}
+      <span className="fgc-badge">
+        <span className="fgc-dot" aria-hidden="true" />
+        <span className="hidden sm:inline">National Challenge</span>
       </span>
 
-      <div className="fgc-marquee relative flex-1 h-full flex items-center overflow-hidden">
+      {/* Scrolling text */}
+      <div className="fgc-marquee relative flex-1 flex items-center overflow-hidden">
         <div className="fgc-marquee-track flex">
           {row(0)}
           {row(1)}
         </div>
       </div>
 
-      <span className="inline-flex items-center gap-1.5 h-full shrink-0 px-4 bg-[#070B12] text-[#F7D794] text-[12.5px] font-semibold group-hover:text-white transition-colors">
-        <span className="hidden sm:inline">Register now</span>
-        <ArrowUpRight className="w-4 h-4" aria-hidden="true" />
+      {/* Call to action */}
+      <span className="fgc-cta-wrap">
+        <span className="fgc-cta">
+          <span className="hidden sm:inline">Register Now</span>
+          <span className="sm:hidden">Register</span>
+          <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
+        </span>
       </span>
     </a>
   );

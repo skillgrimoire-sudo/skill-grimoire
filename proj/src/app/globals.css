@@ -243,21 +243,164 @@ select option {
 
 /* ── Founder's Grant Challenge 2027 announcement bar ─────────────────────── */
 .fgc-banner {
-  background: linear-gradient(90deg, #C69234 0%, #E5B869 35%, #F7D794 50%, #E5B869 65%, #C69234 100%);
-  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.25);
+  height: 44px;
+  color: #140E05;
+  background: linear-gradient(90deg, #B8822A 0%, #E5B869 22%, #FBE3A6 50%, #E5B869 78%, #B8822A 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 244, 214, 0.7), inset 0 -2px 0 rgba(90, 56, 10, 0.45), 0 6px 18px rgba(0, 0, 0, 0.35);
+  isolation: isolate;
 }
+@media (min-width: 640px) {
+  .fgc-banner { height: 52px; }
+}
+/* Light sweeping across the gold */
+.fgc-banner::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  bottom: -50%;
+  left: 0;
+  width: 140px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  transform: translateX(-200px) skewX(-20deg);
+  animation: fgcSweep 5s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Left badge */
+.fgc-badge {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  padding: 0 12px 0 12px;
+  background: #070B12;
+  color: #F7D794;
+  font-family: var(--font-serif, Georgia, serif);
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
+  padding-right: 20px;
+}
+@media (min-width: 640px) {
+  .fgc-badge { font-size: 13px; padding-left: 18px; padding-right: 30px; letter-spacing: 0.2em; }
+}
+.fgc-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #FF4D4D;
+  box-shadow: 0 0 0 0 rgba(255, 77, 77, 0.7);
+  animation: fgcPulse 1.6s ease-out infinite;
+}
+
+/* Scrolling text */
 .fgc-marquee {
-  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
-  mask-image: linear-gradient(90deg, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
 }
 .fgc-marquee-track {
   width: max-content;
-  animation: fgcMarquee 38s linear infinite;
+  animation: fgcMarquee 42s linear infinite;
 }
 .fgc-marquee-group {
   display: flex;
   flex-shrink: 0;
+  align-items: center;
 }
+.fgc-item {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #1A1206;
+}
+.fgc-title {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 14px;
+  border-radius: 999px;
+  background: #070B12;
+  color: #F7D794;
+  font-family: var(--font-serif, Georgia, serif);
+  font-weight: 900;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: 0 0 0 1.5px rgba(7, 11, 18, 0.9), inset 0 0 0 1px rgba(247, 215, 148, 0.35);
+}
+.fgc-prize {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 14px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #8F1D1D 0%, #5E0F0F 100%);
+  color: #FFE7A8;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-weight: 900;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: inset 0 0 0 1px rgba(255, 231, 168, 0.45), 0 2px 6px rgba(94, 15, 15, 0.45);
+}
+@media (min-width: 640px) {
+  .fgc-item { font-size: 14px; }
+  .fgc-title { font-size: 15px; padding: 5px 16px; }
+  .fgc-prize { font-size: 14.5px; padding: 5px 16px; }
+}
+.fgc-sep {
+  margin: 0 18px;
+  font-size: 14px;
+  color: #5A380A;
+  opacity: 0.8;
+}
+
+/* Call to action */
+.fgc-cta-wrap {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 0 8px 0 18px;
+  background: #070B12;
+  clip-path: polygon(12px 0, 100% 0, 100% 100%, 0 100%);
+}
+@media (min-width: 640px) {
+  .fgc-cta-wrap { padding: 0 14px 0 26px; }
+}
+.fgc-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #FBE3A6 0%, #E5B869 55%, #C69234 100%);
+  color: #140E05;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-weight: 800;
+  font-size: 12.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 0 0 0 rgba(229, 184, 105, 0.6);
+  animation: fgcGlow 2.4s ease-in-out infinite;
+}
+@media (min-width: 640px) {
+  .fgc-cta { font-size: 13.5px; padding: 8px 18px; }
+}
+
+/* Interaction */
 .fgc-banner:hover .fgc-marquee-track,
 .fgc-banner:focus-visible .fgc-marquee-track {
   animation-play-state: paused;
@@ -266,10 +409,24 @@ select option {
   outline: 2px solid #F7D794;
   outline-offset: -2px;
 }
+
 @keyframes fgcMarquee {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
 }
+@keyframes fgcSweep {
+  0% { transform: translateX(-200px) skewX(-20deg); }
+  60%, 100% { transform: translateX(calc(100vw + 200px)) skewX(-20deg); }
+}
+@keyframes fgcPulse {
+  0% { box-shadow: 0 0 0 0 rgba(255, 77, 77, 0.7); }
+  70% { box-shadow: 0 0 0 7px rgba(255, 77, 77, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 77, 77, 0); }
+}
+@keyframes fgcGlow {
+  0%, 100% { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 0 0 0 rgba(229, 184, 105, 0.55); }
+  50% { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 0 14px 3px rgba(229, 184, 105, 0.55); }
+}
 @media (prefers-reduced-motion: reduce) {
-  .fgc-marquee-track { animation: none; }
+  .fgc-marquee-track, .fgc-banner::after, .fgc-dot, .fgc-cta { animation: none; }
 }
