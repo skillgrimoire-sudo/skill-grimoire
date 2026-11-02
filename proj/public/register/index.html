@@ -423,7 +423,7 @@ footer{background:var(--night);color:var(--night-muted);padding:64px 0 32px}
         <circle cx="200" cy="200" r="184" fill="#FBF6EE"/>
         <circle cx="200" cy="200" r="178" fill="none" stroke="url(#g1)" stroke-width="1.5"/>
         <g class="ring">
-          <text font-family="DM Sans, sans-serif" font-weight="700" font-size="17.5" letter-spacing="5.2" fill="#8A5E17"><textPath href="#circ">SKILLED YOUTH ✦ STRONGER INDIA ✦ FOUNDER’S GRANT CHALLENGE ✦ 2027 ✦</textPath></text>
+          <text font-family="DM Sans, sans-serif" font-weight="700" font-size="16" letter-spacing="4.7" fill="#8A5E17"><textPath id="sealText" href="#circ">SKILLED YOUTH ✦ STRONGER INDIA ✦ FOUNDER’S GRANT CHALLENGE ✦ 2027 ✦</textPath></text>
         </g>
         <circle cx="200" cy="200" r="128" fill="url(#g2)"/>
         <circle cx="200" cy="200" r="120" fill="none" stroke="url(#g1)" stroke-width="1.5" opacity=".8"/>
@@ -887,6 +887,22 @@ const DRAFT_KEY = 'fgc27-draft-v1';
 $('#yr').textContent = new Date().getFullYear();
 
 const phase = () => { const n = Date.now(); return n < OPEN ? 'before' : n > CLOSE ? 'closed' : 'open'; };
+
+/* ---------- seal: fit the curved text exactly once around the circle ---------- */
+(function fitSeal(){
+  const tp = document.getElementById('sealText');
+  if (!tp || !tp.getComputedTextLength) return;
+  const txt = tp.parentNode, target = 2 * Math.PI * 150 - 10, n = [...tp.textContent].length;
+  const run = () => {
+    try{
+      const L = tp.getComputedTextLength(); if (!L) return;
+      const ls = parseFloat(txt.getAttribute('letter-spacing')) || 0;
+      txt.setAttribute('letter-spacing', Math.max(0, ls + (target - L) / n).toFixed(2));
+    }catch(e){}
+  };
+  run();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(run);
+})();
 
 /* ---------- status chip + countdown ---------- */
 function tick(){
