@@ -3,6 +3,7 @@ import { Cinzel, Outfit } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/layout/Footer";
 import AutoReloadOnIdle from "@/components/layout/AutoReloadOnIdle";
+import FoundersGrantBanner from "@/components/layout/FoundersGrantBanner";
 import {
   SITE_URL,
   SITE_NAME,
@@ -95,6 +96,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: jsonLd(organizationJsonLd) }}
         />
         <AutoReloadOnIdle />
+        <FoundersGrantBanner />
         <main className="flex-1 flex flex-col">{children}</main>
         <Footer />
       </body>

@@ -13,6 +13,17 @@ const nextConfig: NextConfig = {
       { source: "/change-password", headers: noIndex },
     ];
   },
+  async redirects() {
+    return [
+      { source: "/founders-grant", destination: "/register", permanent: false },
+    ];
+  },
+  async rewrites() {
+    return [
+      // Founder's Grant Challenge 2027 registration page (static file in public/register/)
+      { source: "/register", destination: "/register/index.html" },
+    ];
+  },
 };
 
 export default nextConfig;

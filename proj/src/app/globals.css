@@ -240,3 +240,36 @@ select option {
 .animate-cloud-drift {
   animation: cloudDrift 60s linear infinite;
 }
+
+/* ── Founder's Grant Challenge 2027 announcement bar ─────────────────────── */
+.fgc-banner {
+  background: linear-gradient(90deg, #C69234 0%, #E5B869 35%, #F7D794 50%, #E5B869 65%, #C69234 100%);
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+.fgc-marquee {
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
+}
+.fgc-marquee-track {
+  width: max-content;
+  animation: fgcMarquee 38s linear infinite;
+}
+.fgc-marquee-group {
+  display: flex;
+  flex-shrink: 0;
+}
+.fgc-banner:hover .fgc-marquee-track,
+.fgc-banner:focus-visible .fgc-marquee-track {
+  animation-play-state: paused;
+}
+.fgc-banner:focus-visible {
+  outline: 2px solid #F7D794;
+  outline-offset: -2px;
+}
+@keyframes fgcMarquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fgc-marquee-track { animation: none; }
+}
