@@ -71,11 +71,11 @@ export default function LandingHeroSection() {
               Skill Grimoire
             </div>
 
-            <h1 className="font-serif text-3xl sm:text-5xl lg:text-7xl font-bold text-white leading-[1.15] tracking-tight mb-4 sm:mb-6">
+            <h2 className="font-serif text-3xl sm:text-5xl lg:text-7xl font-bold text-white leading-[1.15] tracking-tight mb-4 sm:mb-6">
               The skills<br />
               classrooms<br />
               <span className="text-[#E5B869] italic">skip.</span>
-            </h1>
+            </h2>
 
             <p className="text-gray-300 text-sm sm:text-base lg:text-lg leading-relaxed mb-6 sm:mb-8 max-w-md">
               AI integrated skill development for <span className="font-bold text-[#E5B869]/90 px-1 rounded">Class 10, 11th, 12th</span> and <span className="font-bold text-[#E5B869]/90 px-1 rounded">Undergrad Students</span>, delivered through your institution. We teach what the <span className="font-bold text-white">job actually needs</span>, not what the textbook already covers.

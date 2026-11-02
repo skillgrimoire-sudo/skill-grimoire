@@ -12,6 +12,17 @@ import BenefitsSection from "@/components/landing/BenefitsSection";
 import PartnerFinaleSection from "@/components/landing/PartnerFinaleSection";
 import StudentDashboard from "@/components/dashboard/StudentDashboard";
 import { verifyJwt, SESSION_COOKIE } from "@/lib/auth";
+import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = {
+  ...pageMetadata(
+    "/",
+    "AI Skill Development for Schools & Colleges in India",
+    "Skill Grimoire partners with schools, PU colleges and degree colleges to deliver AI-integrated, job-ready skill programmes, from Class 10 career guidance to undergraduate and postgraduate courses. Free for rural and aided institutions. Based in Bengaluru."
+  ),
+  title: { absolute: "Skill Grimoire | AI Skill Development for Schools & Colleges in India" },
+};
 
 export default async function HomePage() {
   const cookieStore = await cookies();

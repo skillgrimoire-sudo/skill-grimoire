@@ -39,11 +39,9 @@ function FAQItem({ question, children }: { question: string, children: React.Rea
         </span>
         {isOpen ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-[#E5B869]" />}
       </button>
-      {isOpen && (
-        <div className="px-6 pb-5 pt-1 text-sm text-gray-400 leading-relaxed pl-14">
-          {children}
-        </div>
-      )}
+      <div hidden={!isOpen} className="px-6 pb-5 pt-1 text-sm text-gray-400 leading-relaxed pl-14">
+        {children}
+      </div>
     </div>
   );
 }
@@ -153,7 +151,7 @@ export default function InstitutionsPage() {
                        </div>
                        <h3 className="text-lg font-bold text-white mb-3 font-serif">Skill Grimoire handles</h3>
                        <p className="text-sm text-gray-400 leading-relaxed">
-                         Curriculum, educators, production, delivery structure, certificates, scholarships and programme support.
+                         Curriculum, educators, production, delivery structure, certificates, the Founder&apos;s Grant and programme support.
                        </p>
                     </div>
                     {/* Block 2 */}

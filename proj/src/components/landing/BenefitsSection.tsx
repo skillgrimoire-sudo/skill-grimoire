@@ -13,13 +13,23 @@ import {
 } from "lucide-react";
 
 function useCountUp(target: number, duration: number = 2000) {
-  const [count, setCount] = useState(0);
+  // Start at the real number so search engines (and visitors without JavaScript)
+  // see the actual figure instead of "0+". The count-up animation still plays on screen.
+  const [count, setCount] = useState(target);
   const ref = useRef<HTMLDivElement>(null);
   const hasAnimated = useRef(false);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+
+    // Reset to 0 only if the numbers are still off-screen, so the animation can run when they scroll into view.
+    const rect = el.getBoundingClientRect();
+    if (rect.top > window.innerHeight) {
+      setCount(0);
+    } else {
+      hasAnimated.current = true;
+    }
 
     const observer = new IntersectionObserver(
       ([entry]) => {

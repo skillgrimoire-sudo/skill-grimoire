@@ -32,13 +32,13 @@ const RuralAccessSection = () => {
             <span className="uppercase text-xs tracking-widest">Rural Access Initiative</span>
           </div>
 
-          <h2 className="text-3xl md:text-4xl lg:text-5xl text-white font-serif leading-tight">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl text-white font-serif leading-tight">
             Somewhere in a<br />
             government school there<br />
             is a student who would be<br />
             excellent at this, and who<br />
             will never hear about it.
-          </h2>
+          </h1>
 
           <h3 className="text-xl md:text-2xl text-amber-400 font-medium">
             We built Skill Grimoire so that changes.

@@ -51,7 +51,7 @@ export default function PartnershipSection() {
     {
       id: "04",
       title: "You earn a revenue share.",
-      description: "Top performers earn scholarships and certificates. Your outcomes improve.",
+      description: "Top performers earn the Founder's Grant and certificates. Your outcomes improve.",
       image: "/images/partnership_growth.jpg",
       icon: <TrendingUp className="w-6 h-6 text-[#E5B869]" />
     }

@@ -18,7 +18,7 @@ export default function ScholarshipCard() {
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1">
           <span className="text-[10px] text-[#E5B869] uppercase tracking-wider font-bold">
-            Founders Grant
+            Founder&apos;s Grant
           </span>
           <Sparkles className="w-2.5 h-2.5 text-[#E5B869]" />
         </div>
@@ -26,7 +26,7 @@ export default function ScholarshipCard() {
           Top Performer
         </h4>
         <p className="text-[11px] text-gray-300 truncate">
-          You are eligible for Founders Grant
+          You are eligible for the Founder&apos;s Grant
         </p>
       </div>
 

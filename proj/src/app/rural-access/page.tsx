@@ -4,6 +4,14 @@ import { WeatherProvider } from "@/context/WeatherContext";
 import WeatherBackground from "@/components/weather/WeatherBackground";
 import { AuthProvider } from "@/context/AuthContext";
 import RuralAccessSection from "@/components/landing/RuralAccessSection";
+import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = pageMetadata(
+  "/rural-access",
+  "Free Skill Education for Rural Schools",
+  "Through the Rural Access Initiative, a share of what partner institutions pay funds AI-integrated skill education for students in rural and aided schools and colleges, completely free, with nothing removed or watered down."
+);
 
 export default function RuralAccessPage() {
   return (

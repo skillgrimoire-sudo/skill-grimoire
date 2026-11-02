@@ -50,13 +50,13 @@ export default function MobileHeroCarousel({ onOpenVideo }: MobileHeroCarouselPr
           </div>
 
           {/* Headings */}
-          <h1 className="font-serif text-3xl sm:text-4xl font-extrabold text-white leading-[1.15] tracking-tight">
+          <h2 className="font-serif text-3xl sm:text-4xl font-extrabold text-white leading-[1.15] tracking-tight">
             Learn.<br />
             Upskill.<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFF5D6] via-[#F5D075] to-[#D4A043]">
               Get Future Ready.
             </span>
-          </h1>
+          </h2>
 
           <p className="text-xs text-gray-300 leading-relaxed">
             The all-in-one ecosystem to learn, teach and transform careers with the power of AI.

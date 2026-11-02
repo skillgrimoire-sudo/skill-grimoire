@@ -3,6 +3,14 @@ import Navbar from "@/components/layout/Navbar";
 import { AuthProvider } from "@/context/AuthContext";
 import { WeatherProvider } from "@/context/WeatherContext";
 import WeatherBackground from "@/components/weather/WeatherBackground";
+import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = pageMetadata(
+  "/terms",
+  "Terms & Conditions",
+  "Terms and conditions for student registration on Skill Grimoire, covering eligibility, services, conduct, assessments, the Founder's Grant, certificates and dispute resolution."
+);
 
 export default function TermsConditionsPage() {
   return (

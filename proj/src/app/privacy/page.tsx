@@ -3,6 +3,14 @@ import Navbar from "@/components/layout/Navbar";
 import { AuthProvider } from "@/context/AuthContext";
 import { WeatherProvider } from "@/context/WeatherContext";
 import WeatherBackground from "@/components/weather/WeatherBackground";
+import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = pageMetadata(
+  "/privacy",
+  "Privacy Policy",
+  "How Skill Grimoire Private Limited collects, uses, protects and retains personal data of students, parents and institutions, in line with India's Digital Personal Data Protection Act, 2023."
+);
 
 export default function PrivacyPolicyPage() {
   return (
