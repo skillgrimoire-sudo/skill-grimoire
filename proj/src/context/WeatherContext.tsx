@@ -158,12 +158,15 @@ export function WeatherProvider({ children }: { children: React.ReactNode }) {
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
     window.addEventListener("focus", handleSync);
+    // Also resync when the browser restores the page from its back/forward memory
+    window.addEventListener("pageshow", handleSync);
 
     return () => {
       clearTimeout(initTimer);
       clearInterval(interval);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       window.removeEventListener("focus", handleSync);
+      window.removeEventListener("pageshow", handleSync);
     };
   }, []);
 
@@ -332,6 +335,54 @@ export function WeatherProvider({ children }: { children: React.ReactNode }) {
     } else if (!cachedCoords) {
       fetchWeatherData();
     }
+  }, [fetchWeatherData, searchLocation]);
+
+  // While in LIVE mode, keep the weather scene fresh too: refresh every 15 minutes and
+  // whenever the visitor comes back to the tab or wakes the laptop (if it has been 5+ minutes).
+  // Without this, the sky/condition stayed as it was when the page first loaded.
+  const isLiveRef = React.useRef(isLive);
+  const coordsRef = React.useRef(coords);
+  useEffect(() => {
+    isLiveRef.current = isLive;
+    coordsRef.current = coords;
+  }, [isLive, coords]);
+
+  useEffect(() => {
+    let lastRefresh = Date.now();
+
+    const refreshLiveWeather = () => {
+      if (!isLiveRef.current) return; // visitor is exploring with the slider / manual weather
+      lastRefresh = Date.now();
+      let customCity: string | null = null;
+      try {
+        customCity = localStorage.getItem("sg_custom_city");
+      } catch (_) {}
+      if (customCity) {
+        searchLocation(customCity);
+      } else if (coordsRef.current) {
+        fetchWeatherData(coordsRef.current.lat, coordsRef.current.lon);
+      } else {
+        fetchWeatherData();
+      }
+    };
+
+    const FIFTEEN_MIN = 15 * 60 * 1000;
+    const FIVE_MIN = 5 * 60 * 1000;
+    const interval = setInterval(refreshLiveWeather, FIFTEEN_MIN);
+
+    const handleReturn = () => {
+      if (document.visibilityState === "visible" && Date.now() - lastRefresh >= FIVE_MIN) {
+        refreshLiveWeather();
+      }
+    };
+    document.addEventListener("visibilitychange", handleReturn);
+    window.addEventListener("focus", handleReturn);
+
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", handleReturn);
+      window.removeEventListener("focus", handleReturn);
+    };
   }, [fetchWeatherData, searchLocation]);
 
   // Manual condition switcher

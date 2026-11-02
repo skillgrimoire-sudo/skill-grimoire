@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useSyncExternalStore } from "react";
 import { useWeather } from "@/context/WeatherContext";
 import {
   CloudLightning,
@@ -44,16 +44,25 @@ function HazeIcon({ className }: { className?: string }) {
   );
 }
 
+// Never changes after load; only used to tell "first paint" apart from "running in the browser".
+const subscribeNoop = () => () => {};
+
 export default function WeatherStatusBar() {
   const {
     weather,
     isLive,
     isLoading,
-    currentHour,
+    currentHour: liveOrManualHour,
     setManualCondition,
     setManualHour,
     resetToLive,
   } = useWeather();
+
+  // The page is pre-built ahead of time, so the first paint can't know the visitor's clock.
+  // Show a neutral placeholder until the page is running in the browser, then always the real time.
+  // (Previously the pre-built time could stay on screen, e.g. after waking a laptop from sleep.)
+  const isClient = useSyncExternalStore(subscribeNoop, () => true, () => false);
+  const currentHour = isClient ? liveOrManualHour : 12;
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
@@ -162,8 +171,8 @@ export default function WeatherStatusBar() {
           <div className="h-3.5 w-px bg-white/15 hidden xs:block" />
 
           {/* Current time */}
-          <div className="hidden xs:flex items-center text-[11px] text-gray-300 font-medium tabular-nums" suppressHydrationWarning>
-            {formatHour(currentHour)}
+          <div className="hidden xs:flex items-center text-[11px] text-gray-300 font-medium tabular-nums">
+            {isClient ? formatHour(currentHour) : "--:--"}
           </div>
 
           {/* Maximize Button */}
@@ -349,8 +358,8 @@ export default function WeatherStatusBar() {
 
           {/* Current time display */}
           <div className="hidden sm:flex items-center gap-1 bg-[#101827] border border-[#E5B869]/20 rounded-full px-2 py-0.5 shrink-0">
-            <span className="text-[10px] font-bold text-white tabular-nums" suppressHydrationWarning>
-              {formatHour(currentHour)}
+            <span className="text-[10px] font-bold text-white tabular-nums">
+              {isClient ? formatHour(currentHour) : "--:--"}
             </span>
           </div>
         </div>
