@@ -4,7 +4,7 @@ import { pageMetadata, jsonLd, SITE_URL } from "@/lib/seo";
 export const metadata: Metadata = pageMetadata(
   "/institutions",
   "Skill Programmes for Schools & Colleges",
-  "Partner with Skill Grimoire to bring AI-integrated skill development and placement readiness to your school, PU college or degree college. We handle curriculum, delivery, assessment and certificates alongside your syllabus."
+  "Partner with Skill Grimoire to bring AI-integrated skill development and placement readiness to your school, junior or PU college, or degree college anywhere in India. We handle curriculum, delivery, assessment and certificates alongside your syllabus."
 );
 
 // The same questions and answers shown in the FAQ on this page, so Google can show them in search results.

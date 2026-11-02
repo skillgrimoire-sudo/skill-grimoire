@@ -6,7 +6,7 @@ export const LEGAL_NAME = "Skill Grimoire Private Limited";
 export const CONTACT_EMAIL = "office@skillgrimoire.com";
 
 export const DEFAULT_DESCRIPTION =
-  "Skill Grimoire is a Bengaluru-based AI-integrated skill development company. We partner with schools, PU colleges and degree colleges across India to deliver practical, job-ready skill programmes for Class 10, PUC, undergraduate and postgraduate students, with free access for rural and aided institutions.";
+  "Skill Grimoire is a Bengaluru-based AI-integrated skill development company. We partner with schools, junior and PU colleges, and degree colleges across India to deliver practical, job-ready skill programmes for Class 10, Class 11 and 12, undergraduate and postgraduate students, with free access for rural and aided institutions.";
 
 export const KEYWORDS = [
   "Skill Grimoire",
@@ -17,9 +17,9 @@ export const KEYWORDS = [
   "employability skills training",
   "placement readiness training for colleges",
   "career guidance after 10th",
-  "PUC skill courses Karnataka",
+  "skill courses for Class 11 and 12 students",
   "free AI course for rural students",
-  "EdTech Karnataka",
+  "EdTech India",
   "Founder's Grant Challenge",
 ];
 

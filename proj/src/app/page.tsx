@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   ...pageMetadata(
     "/",
     "AI Skill Development for Schools & Colleges in India",
-    "Skill Grimoire partners with schools, PU colleges and degree colleges to deliver AI-integrated, job-ready skill programmes, from Class 10 career guidance to undergraduate and postgraduate courses. Free for rural and aided institutions. Based in Bengaluru."
+    "Skill Grimoire partners with schools, junior and PU colleges, and degree colleges across India to deliver AI-integrated, job-ready skill programmes, from Class 10 career guidance to undergraduate and postgraduate courses. Free for rural and aided institutions."
   ),
   title: { absolute: "Skill Grimoire | AI Skill Development for Schools & Colleges in India" },
 };
