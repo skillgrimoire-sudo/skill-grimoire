@@ -60,7 +60,7 @@ export default function FoundersGrantBanner() {
     <a
       href="/register"
       aria-label="Founder’s Grant Challenge 2027: national innovation challenge for UG and PG students. ₹3 Lakh+ prize pool. Free registration. Register now."
-      className="fgc-banner group relative flex items-stretch w-full overflow-hidden no-underline"
+      className="fgc-banner group relative flex items-center w-full no-underline"
     >
       {/* Left badge */}
       <span className="fgc-badge">
@@ -68,13 +68,15 @@ export default function FoundersGrantBanner() {
         <span className="hidden sm:inline">National Challenge</span>
       </span>
 
-      {/* Scrolling text */}
-      <div className="fgc-marquee relative flex-1 flex items-center overflow-hidden">
-        <div className="fgc-marquee-track flex">
-          {row(0)}
-          {row(1)}
+      {/* Scrolling text on a rounded gold strip (same shape as the site's gold buttons) */}
+      <span className="fgc-strip">
+        <div className="fgc-marquee relative flex-1 flex items-center overflow-hidden">
+          <div className="fgc-marquee-track flex">
+            {row(0)}
+            {row(1)}
+          </div>
         </div>
-      </div>
+      </span>
 
       {/* Call to action */}
       <span className="fgc-cta-wrap">
