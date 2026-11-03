@@ -162,14 +162,16 @@ section,#formCard{scroll-margin-top:80px}
 @media (max-width:700px){.sectors{grid-template-columns:1fr}}
 
 /* journey */
-.journey{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:64px}
-.journey::before{content:"";position:absolute;top:44px;left:12%;right:12%;border-top:2px dashed var(--line-2)}
+.journey{position:relative;display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:64px}
+.journey::before{content:"";position:absolute;top:44px;left:10%;right:10%;border-top:2px dashed var(--line-2)}
+.step-j .tag{display:inline-block;margin-bottom:6px;font:700 11px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
 .step-j{position:relative;text-align:center}
 .step-j .ring{display:grid;place-items:center;width:88px;height:88px;margin:0 auto 16px;border-radius:50%;background:var(--card);color:var(--gold-dk);box-shadow:0 0 0 1px var(--line-2) inset,0 0 0 8px var(--paper),var(--shadow)}
 .step-j .ring .i{width:36px;height:36px}
 .step-j h3{font:700 20px/1.2 var(--serif)}
 .step-j p{margin-top:6px;color:var(--ink-2);font-size:15px}
 .step-j.final .ring{background:var(--night);color:var(--gold-3)}
+@media (max-width:980px) and (min-width:761px){.journey{grid-template-columns:repeat(3,1fr);row-gap:36px}.journey::before{display:none}}
 @media (max-width:760px){
   .journey{grid-template-columns:1fr;gap:0;margin-bottom:48px}
   .journey::before{top:30px;bottom:30px;left:44px;right:auto;border-top:0;border-left:2px dashed var(--line-2)}
@@ -345,6 +347,7 @@ footer{background:var(--night);color:var(--night-muted);padding:64px 0 32px}
     <symbol id="i-rise" viewBox="0 0 24 24"><path d="M4 20 20 4"/><path d="M10 4h10v10"/></symbol>
     <symbol id="i-mega" viewBox="0 0 24 24"><path d="M3 10.5v3a1 1 0 0 0 1 1h2.5l6.5 4.5V5L6.5 9.5H4a1 1 0 0 0-1 1z"/><path d="M16.5 9a4.2 4.2 0 0 1 0 6M19 6.5a7.6 7.6 0 0 1 0 11"/></symbol>
     <symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 3h8.5L19 7.5V21H6z"/><path d="M14 3v5h5M9 12.5h7M9 16.5h5"/></symbol>
+    <symbol id="i-video" viewBox="0 0 24 24"><rect x="2.5" y="6" width="13.5" height="12" rx="2"/><path d="M16 10.5 21.5 7.5v9L16 13.5"/></symbol>
     <symbol id="i-laptop" viewBox="0 0 24 24"><rect x="4" y="4.5" width="16" height="11" rx="1.5"/><path d="M2 19.5h20"/></symbol>
     <symbol id="i-scales" viewBox="0 0 24 24"><path d="M12 4v16M8 20h8M5 7h14"/><path d="M5 7 2.5 13a2.7 2.7 0 0 0 5 0zM19 7l-2.5 6a2.7 2.7 0 0 0 5 0z"/></symbol>
     <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M5 20c0-8.5 5-15 15-15 0 10-6 15-14 15"/><path d="M5 20c3-4.5 6.5-7.5 10.5-9.5"/></symbol>
@@ -515,10 +518,11 @@ footer{background:var(--night);color:var(--night-muted);padding:64px 0 32px}
       <p>A structured, fair and nationwide journey from idea to the grand stage.</p>
     </div>
     <div class="journey">
-      <div class="step-j reveal"><div class="ring"><svg class="i"><use href="#i-clip"/></svg></div><div><h3>Registration</h3><p>8 Nov 2026 – 31 Jan 2027</p></div></div>
-      <div class="step-j reveal"><div class="ring"><svg class="i"><use href="#i-layers"/></svg></div><div><h3>Preliminary Screening</h3><p>Sector-wise review of every entry</p></div></div>
-      <div class="step-j reveal"><div class="ring"><svg class="i"><use href="#i-users"/></svg></div><div><h3>Sector Semi-finals</h3><p>One finalist from each sector</p></div></div>
-      <div class="step-j final reveal"><div class="ring"><svg class="i"><use href="#i-trophy"/></svg></div><div><h3>Grand Finals</h3><p>7–9 May 2027, Bengaluru</p></div></div>
+      <div class="step-j reveal"><div class="ring"><svg class="i"><use href="#i-clip"/></svg></div><div><span class="tag">Step 1</span><h3>Registration</h3><p>8 Nov 2026 – 31 Jan 2027. Register and upload your abstract.</p></div></div>
+      <div class="step-j reveal"><div class="ring"><svg class="i"><use href="#i-doc"/></svg></div><div><span class="tag">Round 1</span><h3>Prelims</h3><p>Abstract round. Every abstract is reviewed sector-wise.</p></div></div>
+      <div class="step-j reveal"><div class="ring"><svg class="i"><use href="#i-video"/></svg></div><div><span class="tag">Round 2</span><h3>Quarter-finals</h3><p>Shortlisted teams submit a 3&#8209;minute video pitch.</p></div></div>
+      <div class="step-j reveal"><div class="ring"><svg class="i"><use href="#i-laptop"/></svg></div><div><span class="tag">Round 3</span><h3>Semi-finals</h3><p>Present your idea live to judges online, batch-wise.</p></div></div>
+      <div class="step-j final reveal"><div class="ring"><svg class="i"><use href="#i-trophy"/></svg></div><div><span class="tag">Finale</span><h3>Grand Finals</h3><p>7–9 May 2027, in Bengaluru.</p></div></div>
     </div>
 
     <div class="two">
@@ -556,7 +560,7 @@ footer{background:var(--night);color:var(--night-muted);padding:64px 0 32px}
     <div class="head center reveal">
       <span class="eyebrow">Free · Takes about 15 minutes</span>
       <h2 style="margin-top:14px">Register Your <em>Team</em></h2>
-      <p>The team lead fills this in once for the whole team. Keep your idea proposal PDF ready. Your progress is saved on this device as you type.</p>
+      <p>The team lead fills this in once for the whole team. Keep your idea abstract (PDF) ready. Your progress is saved on this device as you type.</p>
     </div>
 
     <div class="form-card" id="formCard">
@@ -583,7 +587,7 @@ footer{background:var(--night);color:var(--night-muted);padding:64px 0 32px}
           <dt>Submitted</dt><dd id="sTime"></dd>
         </dl>
         <p class="next" id="sEmail"></p>
-        <p class="next">Keep this ID safe and quote it in every message to us. Preliminary screening begins after registration closes on 31 January 2027, and we will contact your team lead by email.</p>
+        <p class="next">Keep this ID safe and quote it in every message to us. The prelims (abstract round) begin after registration closes on 31 January 2027. We will email your team lead with the results and the next steps.</p>
         <div class="acts">
           <button class="btn btn-gold" type="button" onclick="window.print()">Print or save this page</button>
           <button class="btn btn-ghost" type="button" id="again">Register another team</button>
@@ -643,16 +647,15 @@ footer{background:var(--night);color:var(--night-muted);padding:64px 0 32px}
           <!-- STEP 4 -->
           <fieldset class="step" data-step="3" hidden>
             <legend>Your idea</legend>
-            <p class="sub">A short summary here, and the full idea in your proposal PDF.</p>
+            <p class="sub">A short summary here, and your idea abstract as a PDF. The prelims are judged on this abstract.</p>
             <div class="guide">
-              <b>What to put in your proposal PDF</b> (one PDF, up to 10 MB; we suggest no more than 10 pages):
+              <b>What to put in your abstract</b> (one PDF, 1–2 pages, up to 10 MB):
               <ol>
                 <li>The problem, and who it affects</li>
                 <li>Evidence, using data from official Government of India or State Government websites, with source links</li>
                 <li>Your solution, and how it would work</li>
-                <li>What it needs: people, money, partners, time</li>
-                <li>The impact you expect, and how it could grow</li>
-                <li>Your team, and why you are the right people to build it</li>
+                <li>The impact you expect, and what it would need to work</li>
+                <li>Your team, in a line or two</li>
               </ol>
             </div>
             <div class="grid">
@@ -661,7 +664,7 @@ footer{background:var(--night);color:var(--night-muted);padding:64px 0 32px}
               <div class="f full"><label for="solution">Your solution <span class="counter" data-for="solution"></span></label><textarea id="solution" name="solution" required minlength="80" maxlength="1200" placeholder="What will you build or do, and how does it solve the problem?"></textarea><div class="err"></div></div>
               <div class="f full"><label for="sources">Government sources you used <span class="opt">(links, one per line)</span></label><textarea id="sources" name="sources" maxlength="1500" style="min-height:96px" placeholder="https://www.data.gov.in/…"></textarea><div class="hint">Only official Government of India or State Government websites. AI tools are never a source of data.</div><div class="err"></div></div>
               <div class="f full">
-                <label for="proposal">Idea proposal (PDF)</label>
+                <label for="proposal">Idea abstract (PDF)</label>
                 <div class="drop" id="drop">
                   <svg class="i"><use href="#i-upload"/></svg>
                   <div><b id="dropTitle">Tap to choose your PDF</b><span id="dropSub">or drag it here · PDF only · up to 10 MB</span></div>
@@ -669,7 +672,6 @@ footer{background:var(--night);color:var(--night-muted);padding:64px 0 32px}
                 </div>
                 <div class="err"></div>
               </div>
-              <div class="f full"><label for="videoLink">Video pitch link <span class="opt">(optional)</span></label><input id="videoLink" name="videoLink" type="url" maxlength="300" inputmode="url" placeholder="https://youtu.be/… or a Google Drive link"><div class="hint">Ideally under 3 minutes. Upload to YouTube as “Unlisted”, or share from Google Drive as “Anyone with the link”.</div><div class="err"></div></div>
             </div>
 
             <div class="decl">
@@ -679,7 +681,7 @@ footer{background:var(--night);color:var(--night-muted);padding:64px 0 32px}
               <div class="f"><label class="check"><input type="checkbox" name="dRules" required>I have read and agree to the <a href="#rules" target="_self">full rules and terms</a>, including how Skill Grimoire may use our entry and our data.</label><div class="err"></div></div>
             </div>
 
-            <div class="busy" id="busy"><div class="bar"><i></i></div><p id="busyText">Uploading your proposal… this can take up to a minute on a slow connection. Please keep this page open.</p></div>
+            <div class="busy" id="busy"><div class="bar"><i></i></div><p id="busyText">Uploading your abstract… this can take up to a minute on a slow connection. Please keep this page open.</p></div>
             <div class="alert" id="submitErr" hidden></div>
           </fieldset>
 
@@ -735,8 +737,9 @@ footer{background:var(--night);color:var(--night-muted);padding:64px 0 32px}
       </ul></div></details>
 
       <details><summary><span class="n">04</span>What you submit</summary><div class="body"><ul>
-        <li>One idea proposal as a PDF, up to 10 MB. We suggest no more than 10 pages, covering the problem, evidence, your solution, what it needs, expected impact and your team.</li>
-        <li>Optional: a short video pitch, ideally under 3 minutes, as a YouTube (Unlisted) or Google Drive link that anyone with the link can open.</li>
+        <li><b>At registration:</b> one idea abstract as a PDF, 1–2 pages, up to 10 MB, covering the problem, evidence, your solution, expected impact and your team. The prelims are judged on this abstract.</li>
+        <li><b>Quarter-finals:</b> teams shortlisted from the prelims submit a video pitch of up to 3 minutes. We will email the details. The video is shared as a YouTube (Unlisted) or Google Drive link that anyone with the link can open.</li>
+        <li><b>Semi-finals:</b> teams present their idea live to the judges online, in batches. The schedule is sent by email.</li>
         <li>Choose the one sector, out of ten, that best fits your idea.</li>
       </ul></div></details>
 
@@ -749,15 +752,15 @@ footer{background:var(--night);color:var(--night-muted);padding:64px 0 32px}
       <details><summary><span class="n">06</span>Originality</summary><div class="body"><ul>
         <li>Your entry must be your team’s own original work.</li>
         <li>Copied or plagiarised entries are disqualified at any stage, including after results are announced.</li>
-        <li>If your idea builds on someone else’s work, say so clearly in your proposal.</li>
+        <li>If your idea builds on someone else’s work, say so clearly in your abstract.</li>
       </ul></div></details>
 
       <details><summary><span class="n">07</span>Stages and judging</summary><div class="body"><ul>
-        <li>Registration (8 Nov 2026 – 31 Jan 2027) → Preliminary Screening → Sector Semi-finals → Grand Finals (7–9 May 2027, Bengaluru).</li>
+        <li>Registration (8 Nov 2026 – 31 Jan 2027) → Prelims (abstract round) → Quarter-finals (3-minute video pitch) → Semi-finals (live online presentations to judges, batch-wise) → Grand Finals (7–9 May 2027, Bengaluru).</li>
         <li>Teams compete within their sector until the semi-finals. One finalist team comes from each sector, making 10 finalists.</li>
         <li>At the Grand Finals, prizes are decided on the strength of the idea and its innovation, not on sector.</li>
         <li>Entries are judged on Problem Clarity, Solution &amp; Innovation, Feasibility, Impact, and Team &amp; Presentation.</li>
-        <li>Dates and format for screening and semi-finals are shared with shortlisted teams by email.</li>
+        <li>Dates for the quarter-finals and semi-finals are shared with shortlisted teams by email.</li>
         <li>The jury’s decision at every stage is final.</li>
       </ul></div></details>
 
@@ -809,11 +812,12 @@ footer{background:var(--night);color:var(--night-muted);padding:64px 0 32px}
     </div>
     <div class="acc reveal">
       <details><summary>Do we need a working product or prototype?</summary><div class="body"><p>No. You need a clear understanding of the problem, a workable idea and a realistic plan.</p></div></details>
+      <details><summary>Do we need to make a video now?</summary><div class="body"><p>No. At registration you only upload your abstract. Teams shortlisted from the prelims are asked for a 3-minute video pitch for the quarter-finals.</p></div></details>
       <details><summary>Is registration really free?</summary><div class="body"><p>Yes. There is no fee at any stage of the challenge.</p></div></details>
       <details><summary>Can our team have members from different colleges?</summary><div class="body"><p>No. All members of a team should study at the same university or college, and your faculty mentor should be from that institution.</p></div></details>
       <details><summary>Can we use AI tools like ChatGPT or Claude?</summary><div class="body"><p>Yes, for research and writing. The idea and plan must be your own, and any data must come from official government websites, not from AI.</p></div></details>
       <details><summary>Our PDF is bigger than 10 MB. What should we do?</summary><div class="body"><p>Compress it using any free “compress PDF” tool, or lower the image quality before exporting. Large photos are usually the cause.</p></div></details>
-      <details><summary>Can we change our details, sector or proposal after submitting?</summary><div class="body"><p>Email <a href="mailto:foundersgrant@skillgrimoire.com">foundersgrant@skillgrimoire.com</a> from the team lead’s email with your Registration ID before 31 January 2027. Please don’t register a second time.</p></div></details>
+      <details><summary>Can we change our details, sector or abstract after submitting?</summary><div class="body"><p>Email <a href="mailto:foundersgrant@skillgrimoire.com">foundersgrant@skillgrimoire.com</a> from the team lead’s email with your Registration ID before 31 January 2027. Please don’t register a second time.</p></div></details>
       <details><summary>How will we know if we are shortlisted?</summary><div class="body"><p>We contact the team lead by email. Keep an eye on your inbox, and check the spam folder too.</p></div></details>
       <details><summary>Whom do we contact for help?</summary><div class="body"><p>Email <a href="mailto:foundersgrant@skillgrimoire.com">foundersgrant@skillgrimoire.com</a>, or call or WhatsApp <a href="tel:+916300690221">+91 63006 90221</a>.</p></div></details>
     </div>
@@ -1059,9 +1063,7 @@ function prepare(step){
       if (!/\.pdf$/i.test(f.name) && f.type !== 'application/pdf') fileIn.setCustomValidity('Only PDF files are accepted.');
       else if (f.size > MAX_BYTES) fileIn.setCustomValidity(`Your PDF is ${mb(f.size)}. The limit is ${CONFIG.MAX_PDF_MB} MB, so please compress it.`);
       else if (f.size < 1024) fileIn.setCustomValidity('This PDF looks empty. Please choose the right file.');
-    } else fileIn.setCustomValidity('Please attach your idea proposal as a PDF.');
-    const vl = form.videoLink;
-    if (vl.value && !/^https?:\/\/\S+\.\S+/i.test(vl.value)) vl.setCustomValidity('Paste the full link, starting with https://');
+    } else fileIn.setCustomValidity('Please attach your idea abstract as a PDF.');
   }
   return els;
 }
