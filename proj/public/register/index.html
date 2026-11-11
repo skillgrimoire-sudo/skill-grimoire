@@ -200,7 +200,7 @@ section,#formCard{scroll-margin-top:80px}
 .reg{background:radial-gradient(800px 400px at 50% 0%,rgba(242,212,142,.35),transparent 70%),var(--cream)}
 .form-card{max-width:880px;margin:0 auto;border-radius:28px;background:var(--card);box-shadow:var(--shadow),0 0 0 1px var(--line-2) inset;overflow:hidden}
 .form-top{padding:26px 34px 0}
-.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0;padding:0;list-style:none}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0;padding:0;list-style:none}
 .tabs button{width:100%;display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:12px 4px 14px;border:0;border-bottom:3px solid var(--line);background:none;font:600 13px/1.2 var(--sans);color:var(--muted);text-align:left;cursor:pointer}
 .tabs button span{font:800 12px/1 var(--sans);letter-spacing:.14em;color:var(--line-2)}
 .tabs button[aria-current="step"]{color:var(--ink);border-bottom-color:var(--gold-2)}
@@ -518,8 +518,8 @@ footer{background:var(--night);color:var(--night-muted);padding:64px 0 32px}
       <p>A structured, fair and nationwide journey from idea to the grand stage.</p>
     </div>
     <div class="journey">
-      <div class="step-j reveal"><div class="ring"><svg class="i"><use href="#i-clip"/></svg></div><div><span class="tag">Step 1</span><h3>Registration</h3><p>8 Nov 2026 – 31 Jan 2027. Register and upload your abstract.</p></div></div>
-      <div class="step-j reveal"><div class="ring"><svg class="i"><use href="#i-doc"/></svg></div><div><span class="tag">Round 1</span><h3>Prelims</h3><p>Abstract round. Every abstract is reviewed sector-wise.</p></div></div>
+      <div class="step-j reveal"><div class="ring"><svg class="i"><use href="#i-clip"/></svg></div><div><span class="tag">Step 1</span><h3>Registration</h3><p>8 Nov 2026 – 31 Jan 2027. Register your team, members and mentor.</p></div></div>
+      <div class="step-j reveal"><div class="ring"><svg class="i"><use href="#i-doc"/></svg></div><div><span class="tag">Round 1</span><h3>Prelims</h3><p>Registered teams submit a short abstract, reviewed sector-wise.</p></div></div>
       <div class="step-j reveal"><div class="ring"><svg class="i"><use href="#i-video"/></svg></div><div><span class="tag">Round 2</span><h3>Quarter-finals</h3><p>Shortlisted teams submit a 3&#8209;minute video pitch.</p></div></div>
       <div class="step-j reveal"><div class="ring"><svg class="i"><use href="#i-laptop"/></svg></div><div><span class="tag">Round 3</span><h3>Semi-finals</h3><p>Present your idea live to judges online, batch-wise.</p></div></div>
       <div class="step-j final reveal"><div class="ring"><svg class="i"><use href="#i-trophy"/></svg></div><div><span class="tag">Finale</span><h3>Grand Finals</h3><p>7–9 May 2027, in Bengaluru.</p></div></div>
@@ -558,9 +558,9 @@ footer{background:var(--night);color:var(--night-muted);padding:64px 0 32px}
 <section class="sec reg" id="register">
   <div class="wrap">
     <div class="head center reveal">
-      <span class="eyebrow">Free · Takes about 15 minutes</span>
+      <span class="eyebrow">Free · Takes about 5 minutes</span>
       <h2 style="margin-top:14px">Register Your <em>Team</em></h2>
-      <p>The team lead fills this in once for the whole team. Keep your idea abstract (PDF) ready. Your progress is saved on this device as you type.</p>
+      <p>The team lead fills this in once for the whole team. Your progress is saved on this device as you type.</p>
     </div>
 
     <div class="form-card" id="formCard">
@@ -587,7 +587,7 @@ footer{background:var(--night);color:var(--night-muted);padding:64px 0 32px}
           <dt>Submitted</dt><dd id="sTime"></dd>
         </dl>
         <p class="next" id="sEmail"></p>
-        <p class="next">Keep this ID safe and quote it in every message to us. The prelims (abstract round) begin after registration closes on 31 January 2027. We will email your team lead with the results and the next steps.</p>
+        <p class="next">Keep this ID safe and quote it in every message to us. We will email your team lead with how and when to submit your abstract for the prelims, and with every next step.</p>
         <div class="acts">
           <button class="btn btn-gold" type="button" onclick="window.print()">Print or save this page</button>
           <button class="btn btn-ghost" type="button" id="again">Register another team</button>
@@ -599,8 +599,7 @@ footer{background:var(--night);color:var(--night-muted);padding:64px 0 32px}
           <ol class="tabs" id="tabs">
             <li><button type="button" data-go="0" aria-current="step"><span>01</span>Team</button></li>
             <li><button type="button" data-go="1" disabled><span>02</span>Members</button></li>
-            <li><button type="button" data-go="2" disabled><span>03</span>Mentor</button></li>
-            <li><button type="button" data-go="3" disabled><span>04</span>Idea &amp; submit</button></li>
+            <li><button type="button" data-go="2" disabled><span>03</span>Mentor &amp; submit</button></li>
           </ol>
         </div>
 
@@ -642,48 +641,16 @@ footer{background:var(--night);color:var(--night-muted);padding:64px 0 32px}
               <div class="f"><label for="mentorMobile">Mentor’s mobile</label><div class="tel"><input id="mentorMobile" name="mentorMobile" type="tel" required inputmode="numeric" maxlength="14" pattern="[6-9][0-9]{9}" data-msg="Enter a 10-digit Indian mobile number."></div><div class="err"></div></div>
               <div class="f full"><label class="check"><input type="checkbox" name="mentorAgreed" required data-msg="Please confirm your mentor has agreed.">Our faculty mentor has agreed to guide our team in this challenge.</label><div class="err"></div></div>
             </div>
-          </fieldset>
 
-          <!-- STEP 4 -->
-          <fieldset class="step" data-step="3" hidden>
-            <legend>Your idea</legend>
-            <p class="sub">A short summary here, and your idea abstract as a PDF. The prelims are judged on this abstract.</p>
-            <div class="guide">
-              <b>What to put in your abstract</b> (one PDF, 1–2 pages, up to 10 MB):
-              <ol>
-                <li>The problem, and who it affects</li>
-                <li>Evidence, using data from official Government of India or State Government websites, with source links</li>
-                <li>Your solution, and how it would work</li>
-                <li>The impact you expect, and what it would need to work</li>
-                <li>Your team, in a line or two</li>
-              </ol>
-            </div>
-            <div class="grid">
-              <div class="f full"><label for="ideaTitle">Idea title</label><input id="ideaTitle" name="ideaTitle" required maxlength="100" placeholder="One line that names your idea"><div class="err"></div></div>
-              <div class="f full"><label for="problem">The problem <span class="counter" data-for="problem"></span></label><textarea id="problem" name="problem" required minlength="80" maxlength="1200" placeholder="What is the problem, where do you see it, and who does it affect?"></textarea><div class="err"></div></div>
-              <div class="f full"><label for="solution">Your solution <span class="counter" data-for="solution"></span></label><textarea id="solution" name="solution" required minlength="80" maxlength="1200" placeholder="What will you build or do, and how does it solve the problem?"></textarea><div class="err"></div></div>
-              <div class="f full"><label for="sources">Government sources you used <span class="opt">(links, one per line)</span></label><textarea id="sources" name="sources" maxlength="1500" style="min-height:96px" placeholder="https://www.data.gov.in/…"></textarea><div class="hint">Only official Government of India or State Government websites. AI tools are never a source of data.</div><div class="err"></div></div>
-              <div class="f full">
-                <label for="proposal">Idea abstract (PDF)</label>
-                <div class="drop" id="drop">
-                  <svg class="i"><use href="#i-upload"/></svg>
-                  <div><b id="dropTitle">Tap to choose your PDF</b><span id="dropSub">or drag it here · PDF only · up to 10 MB</span></div>
-                  <input id="proposal" name="proposal" type="file" accept="application/pdf,.pdf" required>
-                </div>
-                <div class="err"></div>
-              </div>
-            </div>
-
-            <div class="decl">
+            <div class="decl" style="margin-top:22px">
               <div class="f"><label class="check"><input type="checkbox" name="dEligible" required>All our team members are currently enrolled in a UG or PG programme at a university or college in India.</label><div class="err"></div></div>
-              <div class="f"><label class="check"><input type="checkbox" name="dOriginal" required>This idea and plan are our team’s own original work.</label><div class="err"></div></div>
-              <div class="f"><label class="check"><input type="checkbox" name="dData" required>Any data in our entry comes from official government websites, with sources cited. We have not used AI as a source of data.</label><div class="err"></div></div>
               <div class="f"><label class="check"><input type="checkbox" name="dRules" required>I have read and agree to the <a href="#rules" target="_self">full rules and terms</a>, including how Skill Grimoire may use our entry and our data.</label><div class="err"></div></div>
             </div>
 
-            <div class="busy" id="busy"><div class="bar"><i></i></div><p id="busyText">Uploading your abstract… this can take up to a minute on a slow connection. Please keep this page open.</p></div>
+            <div class="busy" id="busy"><div class="bar"><i></i></div><p id="busyText">Submitting your registration… Please keep this page open.</p></div>
             <div class="alert" id="submitErr" hidden></div>
           </fieldset>
+
 
           <div class="nav-btns">
             <button class="btn btn-ghost" type="button" id="prevBtn" hidden><svg class="i"><use href="#i-back"/></svg>Back</button>
@@ -737,7 +704,8 @@ footer{background:var(--night);color:var(--night-muted);padding:64px 0 32px}
       </ul></div></details>
 
       <details><summary><span class="n">04</span>What you submit</summary><div class="body"><ul>
-        <li><b>At registration:</b> one idea abstract as a PDF, 1–2 pages, up to 10 MB, covering the problem, evidence, your solution, expected impact and your team. The prelims are judged on this abstract.</li>
+        <li><b>At registration:</b> your team, member and faculty mentor details, and your sector. No idea or document is needed yet.</li>
+        <li><b>Prelims:</b> registered teams submit an idea abstract (PDF, 1–2 pages) covering the problem, evidence, your solution, expected impact and your team. We will email how and when to submit it. The prelims are judged on this abstract.</li>
         <li><b>Quarter-finals:</b> teams shortlisted from the prelims submit a video pitch of up to 3 minutes. We will email the details. The video is shared as a YouTube (Unlisted) or Google Drive link that anyone with the link can open.</li>
         <li><b>Semi-finals:</b> teams present their idea live to the judges online, in batches. The schedule is sent by email.</li>
         <li>Choose the one sector, out of ten, that best fits your idea.</li>
@@ -812,12 +780,12 @@ footer{background:var(--night);color:var(--night-muted);padding:64px 0 32px}
     </div>
     <div class="acc reveal">
       <details><summary>Do we need a working product or prototype?</summary><div class="body"><p>No. You need a clear understanding of the problem, a workable idea and a realistic plan.</p></div></details>
-      <details><summary>Do we need to make a video now?</summary><div class="body"><p>No. At registration you only upload your abstract. Teams shortlisted from the prelims are asked for a 3-minute video pitch for the quarter-finals.</p></div></details>
+      <details><summary>Do we need our idea ready to register?</summary><div class="body"><p>No. Register your team now with your sector, member and mentor details. We will email you how and when to submit your idea abstract for the prelims.</p></div></details>
+      <details><summary>Do we need to make a video now?</summary><div class="body"><p>No. Registration only needs your team details. Registered teams then submit an abstract for the prelims, and teams shortlisted from the prelims are asked for a 3-minute video pitch for the quarter-finals.</p></div></details>
       <details><summary>Is registration really free?</summary><div class="body"><p>Yes. There is no fee at any stage of the challenge.</p></div></details>
       <details><summary>Can our team have members from different colleges?</summary><div class="body"><p>No. All members of a team should study at the same university or college, and your faculty mentor should be from that institution.</p></div></details>
       <details><summary>Can we use AI tools like ChatGPT or Claude?</summary><div class="body"><p>Yes, for research and writing. The idea and plan must be your own, and any data must come from official government websites, not from AI.</p></div></details>
-      <details><summary>Our PDF is bigger than 10 MB. What should we do?</summary><div class="body"><p>Compress it using any free “compress PDF” tool, or lower the image quality before exporting. Large photos are usually the cause.</p></div></details>
-      <details><summary>Can we change our details, sector or abstract after submitting?</summary><div class="body"><p>Email <a href="mailto:foundersgrant@skillgrimoire.com">foundersgrant@skillgrimoire.com</a> from the team lead’s email with your Registration ID before 31 January 2027. Please don’t register a second time.</p></div></details>
+      <details><summary>Can we change our details or sector after registering?</summary><div class="body"><p>Email <a href="mailto:foundersgrant@skillgrimoire.com">foundersgrant@skillgrimoire.com</a> from the team lead’s email with your Registration ID before 31 January 2027. Please don’t register a second time.</p></div></details>
       <details><summary>How will we know if we are shortlisted?</summary><div class="body"><p>We contact the team lead by email. Keep an eye on your inbox, and check the spam folder too.</p></div></details>
       <details><summary>Whom do we contact for help?</summary><div class="body"><p>Email <a href="mailto:foundersgrant@skillgrimoire.com">foundersgrant@skillgrimoire.com</a>, or call or WhatsApp <a href="tel:+916300690221">+91 63006 90221</a>.</p></div></details>
     </div>
@@ -1002,20 +970,6 @@ $$('.counter').forEach(c => {
   t.addEventListener('input', upd); upd();
 });
 
-/* ---------- PDF picker ---------- */
-const fileIn = form.proposal, drop = $('#drop');
-const mb = b => (b/1048576).toFixed(b < 1048576 ? 2 : 1) + ' MB';
-function showFile(){
-  const f = fileIn.files[0];
-  drop.classList.toggle('has', !!f);
-  $('#dropTitle').textContent = f ? f.name : 'Tap to choose your PDF';
-  $('#dropSub').textContent = f ? `${mb(f.size)} · tap to change` : 'or drag it here · PDF only · up to 10 MB';
-  showErr(fileIn, '');
-}
-fileIn.addEventListener('change', showFile);
-['dragenter','dragover'].forEach(ev => drop.addEventListener(ev, () => drop.classList.add('over')));
-['dragleave','drop'].forEach(ev => drop.addEventListener(ev, () => drop.classList.remove('over')));
-
 /* ---------- validation ---------- */
 const normMobile = v => { let d = String(v).replace(/\D/g,''); if (d.length === 12 && d.startsWith('91')) d = d.slice(2); if (d.length === 11 && d.startsWith('0')) d = d.slice(1); return d; };
 function showErr(el, msg){
@@ -1056,14 +1010,6 @@ function prepare(step){
   if (step.dataset.step === '2'){
     const me = form.mentorEmail, emails = $$('#members input[type=email]').filter(e => !e.disabled).map(e => e.value.trim().toLowerCase());
     if (me.value && emails.includes(me.value)) me.setCustomValidity('The mentor must be a faculty member, not a team member.');
-  }
-  if (step.dataset.step === '3'){
-    const f = fileIn.files[0];
-    if (f){
-      if (!/\.pdf$/i.test(f.name) && f.type !== 'application/pdf') fileIn.setCustomValidity('Only PDF files are accepted.');
-      else if (f.size > MAX_BYTES) fileIn.setCustomValidity(`Your PDF is ${mb(f.size)}. The limit is ${CONFIG.MAX_PDF_MB} MB, so please compress it.`);
-      else if (f.size < 1024) fileIn.setCustomValidity('This PDF looks empty. Please choose the right file.');
-    } else fileIn.setCustomValidity('Please attach your idea abstract as a PDF.');
   }
   return els;
 }
@@ -1108,7 +1054,6 @@ tabs.forEach(t => t.addEventListener('click', () => {
 }));
 
 /* ---------- submit ---------- */
-const readB64 = f => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.onerror = rej; r.readAsDataURL(f); });
 function payload(){
   const v = n => (form.elements[n] ? form.elements[n].value : '');
   const n = +v('memberCount'), members = [];
@@ -1119,8 +1064,7 @@ function payload(){
     team: { name:v('teamName'), sector:v('sector'), college:v('college'), university:v('university'), city:v('city'), state:v('state'), memberCount:n, heardVia:v('heardVia') },
     members,
     mentor: { name:v('mentorName'), designation:v('mentorDesignation'), department:v('mentorDept'), email:v('mentorEmail'), mobile:v('mentorMobile'), agreed:form.mentorAgreed.checked },
-    idea: { title:v('ideaTitle'), problem:v('problem'), solution:v('solution'), sources:v('sources'), videoLink:v('videoLink') },
-    declarations: { eligible:form.dEligible.checked, original:form.dOriginal.checked, data:form.dData.checked, rules:form.dRules.checked }
+    declarations: { eligible:form.dEligible.checked, rules:form.dRules.checked }
   };
 }
 function setBusy(on){
@@ -1138,8 +1082,7 @@ form.addEventListener('submit', async e => {
   if (!/^https:\/\/script\.google\.com\//.test(CONFIG.SCRIPT_URL)) return fail('Registration is not connected yet. (Admin: paste the Apps Script web app URL into CONFIG.SCRIPT_URL.)');
   setBusy(true);
   try{
-    const data = payload(), f = fileIn.files[0];
-    data.file = { name:f.name, size:f.size, data: await readB64(f) };
+    const data = payload();
     const ctl = new AbortController(), to = setTimeout(() => ctl.abort(), 240000);
     const r = await fetch(CONFIG.SCRIPT_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(data), redirect:'follow', signal:ctl.signal });
     clearTimeout(to);
