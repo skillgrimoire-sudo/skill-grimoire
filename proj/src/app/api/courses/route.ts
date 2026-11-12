@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyJwt, SESSION_COOKIE } from "@/lib/auth";
+import { classAllowed } from "@/lib/studentClasses";
 
 export const dynamic = "force-dynamic";
 
@@ -60,20 +61,8 @@ export async function GET(request: NextRequest) {
 
     // Filter courses by student's class if user is not admin
     if (payload.role !== "ADMIN" && targetClass && targetClass.trim() !== "") {
-      const sClass = targetClass.trim().toLowerCase();
-      const sClassClean = sClass.replace(/\s+/g, "");
-
-      const filtered = allCourses.filter((course) => {
-        if (!course.targetClass || course.targetClass.trim() === "") return true;
-        const allowedClasses = course.targetClass
-          .split(",")
-          .map((c) => c.trim().toLowerCase());
-        return (
-          allowedClasses.includes("all") ||
-          allowedClasses.includes(sClass) ||
-          allowedClasses.some((c) => c.replace(/\s+/g, "") === sClassClean)
-        );
-      });
+      // A student may belong to several classes ("PU I, PU II"): show courses for any of them.
+      const filtered = allCourses.filter((course) => classAllowed(course.targetClass, targetClass));
 
       if (filtered.length > 0) {
         courses = filtered;

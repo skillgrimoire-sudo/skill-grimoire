@@ -432,7 +432,7 @@ footer{background:var(--night);color:var(--night-muted);padding:64px 0 32px}
         <circle cx="200" cy="200" r="120" fill="none" stroke="url(#g1)" stroke-width="1.5" opacity=".8"/>
         <text x="200" y="170" text-anchor="middle" font-family="DM Sans, sans-serif" font-weight="700" font-size="13" letter-spacing="4" fill="#B5A792">EDITION</text>
         <text x="200" y="238" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-weight="800" font-size="84" fill="url(#g1)">1<tspan font-size="38" dy="-34">st</tspan></text>
-        <text x="200" y="272" text-anchor="middle" font-family="DM Sans, sans-serif" font-weight="600" font-size="10.5" letter-spacing="2.4" fill="#B5A792">BENGALURU · MAY 2027</text>
+        <text x="200" y="272" text-anchor="middle" font-family="DM Sans, sans-serif" font-weight="600" font-size="10.5" letter-spacing="2.4" fill="#B5A792">FINALS · BENGALURU</text>
       </svg>
       <div class="free">Free<br>Registration</div>
     </div>
@@ -522,7 +522,7 @@ footer{background:var(--night);color:var(--night-muted);padding:64px 0 32px}
       <div class="step-j reveal"><div class="ring"><svg class="i"><use href="#i-doc"/></svg></div><div><span class="tag">Round 1</span><h3>Prelims</h3><p>Registered teams submit a short abstract, reviewed sector-wise.</p></div></div>
       <div class="step-j reveal"><div class="ring"><svg class="i"><use href="#i-video"/></svg></div><div><span class="tag">Round 2</span><h3>Quarter-finals</h3><p>Shortlisted teams submit a 3&#8209;minute video pitch.</p></div></div>
       <div class="step-j reveal"><div class="ring"><svg class="i"><use href="#i-laptop"/></svg></div><div><span class="tag">Round 3</span><h3>Semi-finals</h3><p>Present your idea live to judges online, batch-wise.</p></div></div>
-      <div class="step-j final reveal"><div class="ring"><svg class="i"><use href="#i-trophy"/></svg></div><div><span class="tag">Finale</span><h3>Grand Finals</h3><p>7–9 May 2027, in Bengaluru.</p></div></div>
+      <div class="step-j final reveal"><div class="ring"><svg class="i"><use href="#i-trophy"/></svg></div><div><span class="tag">Finale</span><h3>Grand Finals</h3><p>In Bengaluru. Date to be announced.</p></div></div>
     </div>
 
     <div class="two">
@@ -724,7 +724,7 @@ footer{background:var(--night);color:var(--night-muted);padding:64px 0 32px}
       </ul></div></details>
 
       <details><summary><span class="n">07</span>Stages and judging</summary><div class="body"><ul>
-        <li>Registration (8 Nov 2026 – 31 Jan 2027) → Prelims (abstract round) → Quarter-finals (3-minute video pitch) → Semi-finals (live online presentations to judges, batch-wise) → Grand Finals (7–9 May 2027, Bengaluru).</li>
+        <li>Registration (8 Nov 2026 – 31 Jan 2027) → Prelims (abstract round) → Quarter-finals (3-minute video pitch) → Semi-finals (live online presentations to judges, batch-wise) → Grand Finals (in Bengaluru, date to be announced).</li>
         <li>Teams compete within their sector until the semi-finals. One finalist team comes from each sector, making 10 finalists.</li>
         <li>At the Grand Finals, prizes are decided on the strength of the idea and its innovation, not on sector.</li>
         <li>Entries are judged on Problem Clarity, Solution &amp; Innovation, Feasibility, Impact, and Team &amp; Presentation.</li>
@@ -882,7 +882,7 @@ function tick(){
   let target = null;
   if (p === 'before'){ $('#phaseText').textContent = 'Registration opens 8 Nov 2026'; target = OPEN; }
   else if (p === 'open'){ chip.classList.add('open'); $('#phaseText').textContent = 'Registration open · closes 31 Jan 2027, 11:59 pm IST'; target = CLOSE; }
-  else { chip.classList.remove('open'); $('#phaseText').textContent = 'Registration closed · Grand Finals 7–9 May 2027'; }
+  else { chip.classList.remove('open'); $('#phaseText').textContent = 'Registration closed · Grand Finals in Bengaluru'; }
   if (!target){ $('#countdown').hidden = true; return; }
   const ms = Math.max(0, target - Date.now());
   const d = Math.floor(ms/864e5), h = Math.floor(ms%864e5/36e5), m = Math.floor(ms%36e5/6e4);

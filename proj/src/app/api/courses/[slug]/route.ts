@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyJwt, SESSION_COOKIE } from "@/lib/auth";
+import { classAllowed } from "@/lib/studentClasses";
 
 export const dynamic = "force-dynamic";
 
@@ -62,18 +63,8 @@ export async function GET(
       if (!targetClass) {
         return NextResponse.json({ success: false, error: "Unauthorized for this class" }, { status: 403 });
       }
-      const allowedClasses = course.targetClass
-        .split(",")
-        .map((c) => c.trim().toLowerCase());
-      const sClass = targetClass.trim().toLowerCase();
-      const sClassClean = sClass.replace(/\s+/g, "");
-
-      const isAllowed =
-        allowedClasses.includes("all") ||
-        allowedClasses.includes(sClass) ||
-        allowedClasses.some((c) => c.replace(/\s+/g, "") === sClassClean);
-
-      if (!isAllowed) {
+      // A student may belong to several classes ("PU I, PU II"): allowed if any of them matches.
+      if (!classAllowed(course.targetClass, targetClass)) {
         return NextResponse.json({ success: false, error: "Unauthorized for this class" }, { status: 403 });
       }
     }

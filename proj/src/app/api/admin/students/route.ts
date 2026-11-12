@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/lib/auth";
 import { requireAdmin } from "@/lib/admin-auth";
 import { sendWelcomeEmail } from "@/lib/email";
+import { normalizeClasses } from "@/lib/studentClasses";
 
 /**
  * GET /api/admin/students — List all students
@@ -127,7 +128,7 @@ export async function POST(request: NextRequest) {
         mustChangePassword: true,
         role: "STUDENT",
         dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : undefined,
-        studentClass: studentClass || undefined,
+        studentClass: normalizeClasses(studentClass),
         gender: gender || undefined,
         avatarUrl: gender === "Male" ? "/images/avatar_male.jpg" : gender === "Female" ? "/images/avatar_female.jpg" : undefined,
       },

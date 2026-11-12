@@ -6,6 +6,7 @@ import {
   RefreshCw, AlertCircle, Upload, FileSpreadsheet, Download, BookOpen,
   User, Calendar, GraduationCap, Eye, EyeOff, Sparkles, Shield, ChevronRight, Edit,
 } from "lucide-react";
+import { CLASS_OPTIONS, parseClasses, joinClasses } from "@/lib/studentClasses";
 
 interface Student {
   id: string;
@@ -44,6 +45,44 @@ function TabBtn({ active, onClick, children }: { active: boolean; onClick: () =>
     >
       {children}
     </button>
+  );
+}
+
+// ── Class picker (one or more classes per student) ────────────────────────────
+
+function ClassPicker({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const selected = parseClasses(value);
+  const isOn = (c: string) => selected.some((s) => s.toLowerCase() === c.toLowerCase());
+  const toggle = (c: string) =>
+    onChange(joinClasses(isOn(c) ? selected.filter((s) => s.toLowerCase() !== c.toLowerCase()) : [...selected, c]));
+  // Keep any older/custom class (e.g. "10A") visible so it isn't lost when editing
+  const extras = selected.filter((s) => !CLASS_OPTIONS.some((o) => o.toLowerCase() === s.toLowerCase()));
+  const options = [...CLASS_OPTIONS, ...extras];
+  return (
+    <div role="group" aria-label="Class / Batch" style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+      {options.map((c) => {
+        const on = isOn(c);
+        return (
+          <button
+            key={c}
+            type="button"
+            aria-pressed={on}
+            onClick={() => toggle(c)}
+            style={{
+              display: "inline-flex", alignItems: "center", gap: 5,
+              padding: "5px 11px", borderRadius: 999, fontSize: 12, fontWeight: 600, lineHeight: 1.3,
+              cursor: "pointer", transition: "all 0.15s",
+              border: `1px solid ${on ? "rgba(229,184,105,0.85)" : "#1E2D45"}`,
+              background: on ? "linear-gradient(135deg, #F5D075, #E5B869 55%, #C69234)" : "#0B1525",
+              color: on ? "#140E05" : "#9fb0c3",
+            }}
+          >
+            {on && <CheckCircle className="w-3.5 h-3.5" />}
+            {c}
+          </button>
+        );
+      })}
+    </div>
   );
 }
 
@@ -101,7 +140,7 @@ function ManualTab({ onClose, onSuccess }: { onClose: () => void; onSuccess: () 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !email || !dob || !studentClass || !gender) {
-      setError("Please fill in all fields to continue.");
+      setError(studentClass ? "Please fill in all fields to continue." : "Please select at least one class, and fill in all fields.");
       return;
     }
     setError("");
@@ -203,24 +242,22 @@ function ManualTab({ onClose, onSuccess }: { onClose: () => void; onSuccess: () 
           <input style={inputStyle} type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="e.g. arjun@school.edu" />
         </FieldGroup>
 
+        <div
+          style={{
+            background: "#060C18", border: "1px solid #1E2D45", borderRadius: 14, padding: "10px 12px 12px",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+            <GraduationCap className="w-4 h-4" style={{ color: studentClass ? "#E5B869" : "#4a5e72" }} />
+            <span style={{ fontSize: 9, fontWeight: 700, color: studentClass ? "#E5B869" : "#4a5e72", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+              Class / Batch · select one or more
+            </span>
+            {studentClass && <CheckCircle className="w-4 h-4 text-emerald-500" style={{ marginLeft: "auto" }} />}
+          </div>
+          <ClassPicker value={studentClass} onChange={setStudentClass} />
+        </div>
+
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-          <FieldGroup icon={<GraduationCap className="w-4 h-4" />} label="Class / Batch" hasValue={!!studentClass}>
-            <select style={inputStyle} value={studentClass} onChange={(e) => setStudentClass(e.target.value)} className="student-select">
-              <option value="" disabled>Select Class</option>
-              <option value="10th">10th</option>
-              <option value="PU I">PU I</option>
-              <option value="PU II">PU II</option>
-              <option value="UG I">UG I</option>
-              <option value="UG II">UG II</option>
-              <option value="UG III">UG III</option>
-              <option value="PG I">PG I</option>
-              <option value="PG II">PG II</option>
-              <option value="10th FC">10th FC</option>
-              <option value="PUC FC">PUC FC</option>
-              <option value="UG FC">UG FC</option>
-              <option value="PG FC">PG FC</option>
-            </select>
-          </FieldGroup>
           <FieldGroup icon={<User className="w-4 h-4" />} label="Gender" hasValue={!!gender}>
             <select style={inputStyle} value={gender} onChange={(e) => setGender(e.target.value)} className="student-select">
               <option value="" disabled>Select Gender</option>
@@ -413,7 +450,7 @@ function ExcelTab({ onClose, onSuccess }: { onClose: () => void; onSuccess: () =
   };
 
   const downloadSample = () => {
-    const csv = "Name,Email,Class,DOB\nArjun Sharma,arjun@school.edu,10A,01/04/2010\nPriya Patel,priya@school.edu,10B,15/08/2009\n";
+    const csv = "Name,Email,Class,DOB\nArjun Sharma,arjun@school.edu,PU II,01/04/2010\nPriya Patel,priya@school.edu,PU I;PU II,15/08/2009\n";
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a"); a.href=url; a.download="students_template.csv"; a.click();
@@ -700,23 +737,9 @@ function EditStudentModal({ student, onClose, onSuccess }: { student: Student; o
               />
             </div>
 
-            <div className="space-y-1">
-              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Class</label>
-              <select value={studentClass} onChange={e => setStudentClass(e.target.value)} className="w-full bg-[#060C18] border border-[#1E2D45] rounded-xl px-4 py-2.5 text-sm text-white outline-none focus:border-[#E5B869]/50 transition">
-                <option value="">Select Class</option>
-                <option value="10th">10th</option>
-                <option value="PU I">PU I</option>
-                <option value="PU II">PU II</option>
-                <option value="UG I">UG I</option>
-                <option value="UG II">UG II</option>
-                <option value="UG III">UG III</option>
-                <option value="PG I">PG I</option>
-                <option value="PG II">PG II</option>
-                <option value="10th FC">10th FC</option>
-                <option value="PUC FC">PUC FC</option>
-                <option value="UG FC">UG FC</option>
-                <option value="PG FC">PG FC</option>
-              </select>
+            <div className="space-y-2">
+              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Class / Batch <span className="normal-case tracking-normal text-gray-500">(select one or more)</span></label>
+              <ClassPicker value={studentClass} onChange={setStudentClass} />
             </div>
 
             <div className="space-y-1">

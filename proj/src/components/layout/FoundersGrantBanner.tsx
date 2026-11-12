@@ -23,7 +23,7 @@ const ITEMS: Item[] = [
   { text: "UG & PG Students · All of India" },
   { text: "Team of 2–4 Members · 10 Sectors" },
   { text: "Registration: 8 Nov 2026 – 31 Jan 2027" },
-  { text: "Grand Finals: 7–9 May 2027, Bengaluru" },
+  { text: "Grand Finals in Bengaluru" },
 ];
 
 function Piece({ item }: { item: Item }) {

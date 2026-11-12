@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hashPassword, revokeAllSessions } from "@/lib/auth";
 import { requireAdmin } from "@/lib/admin-auth";
+import { normalizeClasses } from "@/lib/studentClasses";
 
 /**
  * PUT /api/admin/students/[id] — Update student
@@ -34,7 +35,7 @@ export async function PUT(
     if (name) updateData.name = name;
     if (email) updateData.email = email.toLowerCase().trim();
     if (username) updateData.username = username.toLowerCase().trim();
-    if (studentClass !== undefined) updateData.studentClass = studentClass;
+    if (studentClass !== undefined) updateData.studentClass = normalizeClasses(studentClass) ?? null;
     if (dateOfBirth !== undefined) {
       updateData.dateOfBirth = dateOfBirth ? new Date(dateOfBirth) : null;
     }
