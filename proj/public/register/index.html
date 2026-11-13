@@ -320,7 +320,25 @@ footer{background:var(--night);color:var(--night-muted);padding:64px 0 32px}
 .reveal.in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}.seal .ring,.bar i{animation:none}}
 
+.pop{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(21,18,15,.62);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);animation:popFade .25s ease}
+.pop[hidden]{display:none!important}
+.pop-card{position:relative;width:min(440px,100%);padding:34px 26px 26px;border-radius:24px;background:var(--card);text-align:center;box-shadow:0 0 0 1.5px var(--gold-3) inset,0 30px 70px -20px rgba(0,0,0,.6);animation:popIn .35s cubic-bezier(.2,1.2,.4,1)}
+.pop-card .tick{display:grid;place-items:center;width:76px;height:76px;margin:0 auto 14px;border-radius:50%;background:var(--grad);color:#2A1B07;box-shadow:0 0 0 8px rgba(242,212,142,.35)}
+.pop-card .tick .i{width:38px;height:38px;stroke-width:2.4}
+.pop-card h3{font:800 28px/1.15 var(--serif)}
+.pop-card .sub{margin-top:8px;color:var(--ink-2);font-size:15px}
+.pop-card .regid{margin:16px 0 6px;font-size:clamp(26px,7vw,34px)}
+.pop-card .note{margin-top:12px;padding:10px 12px;border-radius:12px;background:#FFF6E2;color:#6B4A12;font-size:13.5px;box-shadow:0 0 0 1px var(--line-2) inset}
+.pop-card .acts{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:18px}
+.pop-card .acts .btn{min-height:44px;padding:0 18px;font-size:14px}
+.pop-x{position:absolute;top:10px;right:10px;width:38px;height:38px;border:0;border-radius:50%;background:transparent;color:var(--muted);font-size:24px;line-height:1;cursor:pointer}
+.pop-x:hover{background:var(--cream)}
+@keyframes popFade{from{opacity:0}to{opacity:1}}
+@keyframes popIn{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.pop,.pop-card{animation:none}}
+
 @media print{
+  .pop{display:none!important}
   body *{visibility:hidden}
   #success,#success *{visibility:visible}
   #success{position:absolute;inset:0;padding:30px}
@@ -393,6 +411,21 @@ footer{background:var(--night);color:var(--night-muted);padding:64px 0 32px}
 </header>
 
 <main>
+<div class="pop" id="pop" role="dialog" aria-modal="true" aria-labelledby="popTitle" hidden>
+  <div class="pop-card">
+    <button class="pop-x" type="button" id="popClose" aria-label="Close">&times;</button>
+    <div class="tick"><svg class="i"><use href="#i-check"/></svg></div>
+    <h3 id="popTitle">Registration successful!</h3>
+    <p class="sub">Welcome to the Founder’s Grant Challenge 2027, <b id="popTeam"></b>.</p>
+    <div class="regid" id="popId">FGC27-00000</div>
+    <p class="sub" style="margin-top:0">Your Registration ID</p>
+    <p class="note"><b>Take a screenshot or note this ID now.</b> We do not send it by email. Quote it in every message to us.</p>
+    <div class="acts">
+      <button class="btn btn-gold" type="button" id="popCopy">Copy ID</button>
+      <button class="btn btn-ghost" type="button" id="popOk">Done</button>
+    </div>
+  </div>
+</div>
 <!-- ================= HERO ================= -->
 <section class="hero">
   <div class="wrap">
@@ -577,7 +610,7 @@ footer{background:var(--night);color:var(--night-muted);padding:64px 0 32px}
       <!-- Success -->
       <div class="success" id="success" hidden aria-live="polite">
         <div class="tick"><svg class="i"><use href="#i-check"/></svg></div>
-        <h3>Registration received</h3>
+        <h3>Registration successful</h3>
         <p style="margin-top:8px;color:var(--ink-2)">Your Registration ID</p>
         <div class="regid" id="sId">FGC27-00000</div>
         <dl>
@@ -587,7 +620,7 @@ footer{background:var(--night);color:var(--night-muted);padding:64px 0 32px}
           <dt>Submitted</dt><dd id="sTime"></dd>
         </dl>
         <p class="next" id="sEmail"></p>
-        <p class="next">Keep this ID safe and quote it in every message to us. We will email your team lead with how and when to submit your abstract for the prelims, and with every next step.</p>
+        <p class="next">Keep this ID safe and quote it in every message to us. We will email your team lead with how and when to submit your abstract for the prelims.</p>
         <div class="acts">
           <button class="btn btn-gold" type="button" onclick="window.print()">Print or save this page</button>
           <button class="btn btn-ghost" type="button" id="again">Register another team</button>
@@ -642,8 +675,14 @@ footer{background:var(--night);color:var(--night-muted);padding:64px 0 32px}
               <div class="f full"><label class="check"><input type="checkbox" name="mentorAgreed" required data-msg="Please confirm your mentor has agreed.">Our faculty mentor has agreed to guide our team in this challenge.</label><div class="err"></div></div>
             </div>
 
-            <div class="decl" style="margin-top:22px">
+            <div class="guide" style="margin:22px 0 0">
+              <b>Your data</b><br>
+              Your registration details are stored in Skill Grimoire’s Google Drive and handled with the help of AI tools, including ChatGPT by OpenAI, to manage registrations and contact your team. We never sell your data. You can ask us to see, correct or delete it at any time. <a href="#data-terms" target="_self">Read rule 9</a>.
+            </div>
+
+            <div class="decl" style="margin-top:12px">
               <div class="f"><label class="check"><input type="checkbox" name="dEligible" required>All our team members are currently enrolled in a UG or PG programme at a university or college in India.</label><div class="err"></div></div>
+              <div class="f"><label class="check"><input type="checkbox" name="dData" required data-msg="Please tick to agree to how your data is handled.">I agree that our team’s and mentor’s details will be stored in Skill Grimoire’s Google Drive and handled with AI tools, including ChatGPT (OpenAI), as explained in <a href="#data-terms" target="_self">rule 9</a>. Every member and our mentor have agreed to share their details.</label><div class="err"></div></div>
               <div class="f"><label class="check"><input type="checkbox" name="dRules" required>I have read and agree to the <a href="#rules" target="_self">full rules and terms</a>, including how Skill Grimoire may use our entry and our data.</label><div class="err"></div></div>
             </div>
 
@@ -690,7 +729,7 @@ footer{background:var(--night);color:var(--night-muted);padding:64px 0 32px}
         <li>Team of 2–4 members. Solo entries are not accepted.</li>
         <li>All members of a team should study at the same university or college.</li>
         <li>Each team names one faculty member from their institution as mentor. A faculty member may mentor more than one team.</li>
-        <li>A student can be a member of only one team.</li>
+        <li>A student can be a member of only one team. Each email address and mobile number can be registered only once; a registration that repeats one is not accepted.</li>
         <li>There is no limit on the number of teams from one college.</li>
         <li>We may ask for a college ID card or a letter from your institution at any stage to confirm eligibility.</li>
       </ul></div></details>
@@ -738,10 +777,13 @@ footer{background:var(--night);color:var(--night-muted);padding:64px 0 32px}
         <li>Prize money is paid to the team through the process we share with winners, and is subject to applicable tax laws.</li>
       </ul></div></details>
 
-      <details><summary><span class="n">09</span>How we use your entry and your data</summary><div class="body"><ul>
+      <details id="data-terms"><summary><span class="n">09</span>How we use and protect your data</summary><div class="body"><ul>
         <li>By registering, you allow Skill Grimoire to use the details and materials you submit to run the challenge, to contact you about it and about Skill Grimoire’s programmes, and to showcase participants and finalists (names, institution, photos and idea summaries).</li>
-        <li>We do not sell your personal data.</li>
-        <li>Your entry is shared with the jury and the organising team.</li>
+        <li><b>Where your data is kept:</b> registration details are stored in Skill Grimoire’s Google account (Google Drive and Google Sheets).</li>
+        <li><b>AI tools:</b> Skill Grimoire uses AI tools, including ChatGPT by OpenAI, to organise, check and manage registrations and to help prepare messages to teams. These tools may process your data on servers outside India.</li>
+        <li>Your data is shared only with the jury, the organising team and the service providers that help us run the challenge, such as Google and OpenAI. We do not sell your personal data.</li>
+        <li>The team lead confirms that every team member and the faculty mentor have agreed to share their details for this challenge.</li>
+        <li>To see, correct or delete your data, email <a href="mailto:foundersgrant@skillgrimoire.com">foundersgrant@skillgrimoire.com</a> with your Registration ID.</li>
         <li>Skill Grimoire may develop submitted ideas in the future, either together with the team or on its own.</li>
       </ul></div></details>
 
@@ -1064,7 +1106,7 @@ function payload(){
     team: { name:v('teamName'), sector:v('sector'), college:v('college'), university:v('university'), city:v('city'), state:v('state'), memberCount:n, heardVia:v('heardVia') },
     members,
     mentor: { name:v('mentorName'), designation:v('mentorDesignation'), department:v('mentorDept'), email:v('mentorEmail'), mobile:v('mentorMobile'), agreed:form.mentorAgreed.checked },
-    declarations: { eligible:form.dEligible.checked, rules:form.dRules.checked }
+    declarations: { eligible:form.dEligible.checked, data:form.dData.checked, rules:form.dRules.checked }
   };
 }
 function setBusy(on){
@@ -1102,13 +1144,41 @@ function success(res, data){
   $('#sSector').textContent = data.team.sector;
   $('#sLead').textContent = `${data.members[0].name} (${data.members[0].email})`;
   $('#sTime').textContent = new Date().toLocaleString('en-IN', {dateStyle:'medium', timeStyle:'short', timeZone:'Asia/Kolkata'}) + ' IST';
-  $('#sEmail').textContent = res.emailStatus === 'Sent'
-    ? `A confirmation email is on its way to ${data.members[0].email}. If you don’t see it, check your spam folder.`
-    : `A confirmation email will reach ${data.members[0].email} within 24 hours. Your registration is already saved.`;
+  $('#sEmail').textContent = 'Please take a screenshot of this page or print it. We do not send the Registration ID by email.';
   $('#success').hidden = false;
   $('#formCard').scrollIntoView({block:'start', behavior:'smooth'});
+  openPop(res.id, data.team.name);
 }
+
+/* ---------- "Registration successful" pop-up ---------- */
+let popReturn = null;
+function openPop(id, team){
+  $('#popId').textContent = id;
+  $('#popTeam').textContent = team;
+  popReturn = document.activeElement;
+  $('#pop').hidden = false;
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => $('#popOk').focus(), 50);
+}
+function closePop(){
+  $('#pop').hidden = true;
+  document.body.style.overflow = '';
+  const t = $('#sId'); if (t) t.scrollIntoView({block:'center'});
+}
+$('#popOk').addEventListener('click', closePop);
+$('#popClose').addEventListener('click', closePop);
+$('#pop').addEventListener('click', e => { if (e.target.id === 'pop') closePop(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#pop').hidden) closePop(); });
+$('#popCopy').addEventListener('click', async () => {
+  const id = $('#popId').textContent, b = $('#popCopy');
+  try { await navigator.clipboard.writeText(id); b.textContent = 'Copied ✓'; }
+  catch (e) { const r = document.createRange(); r.selectNodeContents($('#popId')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = 'Selected, press copy'; }
+  setTimeout(() => b.textContent = 'Copy ID', 2000);
+});
 $('#again').addEventListener('click', () => location.reload());
+
+/* ---------- links to a rule open it ---------- */
+document.querySelectorAll('a[href="#data-terms"]').forEach(a => a.addEventListener('click', () => { const d = document.getElementById('data-terms'); if (d) d.open = true; }));
 
 /* ---------- reveal on scroll ---------- */
 if ('IntersectionObserver' in window){
