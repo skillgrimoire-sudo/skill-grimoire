@@ -17,7 +17,7 @@ const nextConfig: NextConfig = {
     return [
       { source: "/founders-grant", destination: "/register", permanent: false },
       // Founder's Grant Challenge 2027 brochure (PDF in public/brochure/)
-      { source: "/brochure", destination: "/brochure/Founders-Grant-Challenge-2027-Brochure.pdf", permanent: false },
+      { source: "/brochure", destination: "/brochure/Founders_Grant_Challenge_2027_Brochure_Final_Updated.pdf", permanent: false },
     ];
   },
   async rewrites() {
